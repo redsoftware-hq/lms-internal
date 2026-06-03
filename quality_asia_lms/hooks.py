@@ -133,6 +133,10 @@ app_license = "mit"
 # 	"ToDo": "custom_app.overrides.CustomToDo"
 # }
 
+override_doctype_class = {
+	"Razorpay Settings": "quality_asia_lms.overrides.razorpay_settings.RazorpaySettings",
+}
+
 # Document Events
 # ---------------
 # Hook on document methods and events
