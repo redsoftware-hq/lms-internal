@@ -83,7 +83,11 @@ app_license = "mit"
 # ------------
 
 # before_install = "quality_asia_lms.install.before_install"
-# after_install = "quality_asia_lms.install.after_install"
+after_install = "quality_asia_lms.brand.inject_brand_css"
+
+# Re-inject the brand skin <link> into the (build-generated) LMS SPA shell.
+# bench update runs build -> migrate, so after_migrate self-heals the link.
+after_migrate = "quality_asia_lms.brand.inject_brand_css"
 
 # Uninstallation
 # ------------

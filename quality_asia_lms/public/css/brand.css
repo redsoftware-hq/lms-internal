@@ -1,0 +1,54 @@
+/* Quality Asia — brand skin for the Frappe LMS SPA.
+ *
+ * Loaded after the frappe-ui bundle in lms/lms/www/_lms.html, so these
+ * :root overrides win in the cascade. We only retheme design tokens + the
+ * font (not component markup), so this survives frontend rebuilds.
+ *
+ * Brand kit ref: dev-resources/ref-for-claude  (primary red #e20a0a, Rubik) */
+
+@import url('https://fonts.googleapis.com/css2?family=Rubik:wght@300;400;500;600;700&display=swap');
+
+/* --- Typography: Rubik in place of Inter (inherited from <html>) --- */
+html {
+	font-family: 'Rubik', ui-sans-serif, system-ui, sans-serif !important;
+}
+
+/* --- Brand palette: red primary + accents (override frappe-ui tokens) --- */
+:root {
+	/* Primary / solid-button background (frappe-ui default: near-black #171717) */
+	--surface-gray-7: #e20a0a;
+
+	/* Links & accent TEXT -> brand red (sits on white) */
+	--ink-blue-link: #e20a0a;
+	--ink-blue-2: #e20a0a;
+	--ink-blue-3: #b00808;
+
+	/* Info/accent SURFACES -> light red tint so callouts stay readable
+	 * (e.g. the quiz instructions box: bg-surface-blue-2 + text-ink-blue-3).
+	 * These are background tokens, so they must be light, not strong red. */
+	--surface-blue-1: #fff5f5;
+	--surface-blue-2: #fdecec;
+	--surface-blue-3: #e20a0a;   /* strong filled accent stays bold red */
+	--outline-blue-2: #ffa2a2;   /* soft red border, matches the cards */
+}
+
+/* Brand hover: red -> black on the primary (solid) button */
+.bg-surface-gray-7:hover {
+	background-color: #000 !important;
+}
+
+/* Brand logo: the sidebar account button forces its <img> into a fixed
+ * 32x32 slot (w-8 h-8, no object-fit), which stretches non-square logos.
+ * Target the slot structurally -- an <img> directly inside a button at that
+ * size -- so it preserves aspect ratio for ANY uploaded logo, not a specific
+ * filename. (object-fit: contain is a no-op on already-square images.) */
+button > img.h-8.w-8 {
+	object-fit: contain !important;
+}
+
+/* Course/batch cards: light-red boundary like the reference .school-card.
+ * The card root (.bg-surface-cards) is borderless; the outline is drawn by
+ * its two direct children (image + body), so we recolor those. */
+.bg-surface-cards > div {
+	border-color: #ffa2a2 !important;
+}
