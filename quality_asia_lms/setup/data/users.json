@@ -1,0 +1,19 @@
+[
+  {
+    "email": "instructor1@qualityasia.test",
+    "first_name": "Asha",
+    "last_name": null,
+    "full_name": "Asha",
+    "username": "asha",
+    "user_image": null,
+    "bio": null,
+    "enabled": 1,
+    "user_type": "System User",
+    "send_welcome_email": 0,
+    "roles": [
+      "LMS Student",
+      "Course Creator",
+      "Blogger"
+    ]
+  }
+]

@@ -1,0 +1,14 @@
+{
+  "website_settings": {
+    "app_logo": "/files/qasia school only Q.png",
+    "app_name": "ADMIN-EDITED Name",
+    "banner_image": "/files/qasia school only Q.png",
+    "favicon": "/files/imresizer-qasia school only Q (1).png",
+    "footer_logo": "/files/qasia-school.png"
+  },
+  "lms_settings": {
+    "allow_guest_access": "1",
+    "apply_gst": "1",
+    "show_usd_equivalent": "0"
+  }
+}
