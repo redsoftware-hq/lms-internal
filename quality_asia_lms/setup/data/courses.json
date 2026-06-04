@@ -29,12 +29,7 @@
       "rating": "0.0",
       "notification_sent": 0,
       "doctype": "LMS Course",
-      "instructors": [
-        {
-          "idx": 1,
-          "instructor": "instructor1@qualityasia.test"
-        }
-      ],
+      "related_courses": [],
       "chapters": [
         {
           "idx": 1,
@@ -45,7 +40,12 @@
           "chapter": "0031 Final Exam"
         }
       ],
-      "related_courses": []
+      "instructors": [
+        {
+          "idx": 1,
+          "instructor": "instructor1@qualityasia.test"
+        }
+      ]
     },
     "chapters": [
       {
@@ -158,12 +158,7 @@
       "rating": "0.0",
       "notification_sent": 0,
       "doctype": "LMS Course",
-      "instructors": [
-        {
-          "idx": 1,
-          "instructor": "instructor1@qualityasia.test"
-        }
-      ],
+      "related_courses": [],
       "chapters": [
         {
           "idx": 1,
@@ -174,7 +169,12 @@
           "chapter": "0027 Final Exam"
         }
       ],
-      "related_courses": []
+      "instructors": [
+        {
+          "idx": 1,
+          "instructor": "instructor1@qualityasia.test"
+        }
+      ]
     },
     "chapters": [
       {

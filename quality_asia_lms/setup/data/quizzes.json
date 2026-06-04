@@ -1,0 +1,56 @@
+[
+  {
+    "name": "quiz-iso-27701-privacy-information-management-system",
+    "title": "TEST- ISO 27701 (Privacy Information Management System)",
+    "max_attempts": 0,
+    "show_answers": 0,
+    "show_submission_history": 0,
+    "total_marks": 9,
+    "passing_percentage": 70,
+    "duration": null,
+    "shuffle_questions": 0,
+    "limit_questions_to": 0,
+    "enable_negative_marking": 0,
+    "marks_to_cut": 1,
+    "lesson": "0028 ISO 27701 Final Exam",
+    "course": "free-certified-internal-auditor-training-on-iso-27701-privacy-information-management-system",
+    "doctype": "LMS Quiz",
+    "questions": [
+      {
+        "idx": 1,
+        "question": "QTS-2026-00017",
+        "marks": 2,
+        "question_detail": "In ISO/IEC 27701, the identification of the organization as a PII Controller or PII Processor is first addressed under which clause?  ",
+        "type": "Choices"
+      },
+      {
+        "idx": 2,
+        "question": "QTS-2026-00018",
+        "marks": 2,
+        "question_detail": "Which of the following is a unique requirement introduced in ISO/IEC 27701 for management review compared to ISO/IEC 27001? ",
+        "type": "Choices"
+      },
+      {
+        "idx": 3,
+        "question": "QTS-2026-00019",
+        "marks": 2,
+        "question_detail": "ISO/IEC 27701 can be implemented independently without ISO/IEC 27001.  ",
+        "type": "Choices"
+      },
+      {
+        "idx": 4,
+        "question": "QTS-2026-00020",
+        "marks": 2,
+        "question_detail": "Internal audit requirements under ISO/IEC 27701 are optional if covered under ISO/IEC 27001.",
+        "type": "Choices"
+      },
+      {
+        "idx": 5,
+        "question": "QTS-2026-00021",
+        "marks": 1,
+        "question_detail": "A PII Controller must only ensure data confidentiality but not integrity or availability.",
+        "type": "Choices"
+      }
+    ]
+  }
+]

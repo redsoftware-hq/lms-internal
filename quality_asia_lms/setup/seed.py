@@ -154,6 +154,18 @@ def _upsert(dt, data):
 	return doc
 
 
+def seed_quizzes():
+	"""Questions then quizzes — MUST run before lessons, because
+	Course Lesson.on_update validates that embedded quizzes already exist."""
+	questions = _load("questions.json") or []
+	quizzes = _load("quizzes.json") or []
+	for q in questions:
+		_upsert("LMS Question", q)
+	for quiz in quizzes:
+		_upsert("LMS Quiz", quiz)
+	_log(f"quizzes: {len(questions)} question(s), {len(quizzes)} quiz(zes) upserted")
+
+
 def seed_courses():
 	data = _load("courses.json") or []
 	# dependency order: lessons -> chapters -> course (links resolve, ignore_links covers cycles)
@@ -176,6 +188,7 @@ def run(commit=True):
 	seed_branding()
 	seed_rbac()
 	seed_users()
+	seed_quizzes()  # before courses: lessons validate embedded quizzes exist
 	seed_courses()
 	if commit:
 		frappe.db.commit()

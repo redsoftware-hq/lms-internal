@@ -503,12 +503,12 @@
   ],
   "property_setter": [
     {
-      "doc_type": "LMS Certificate",
-      "field_name": null,
-      "property": "default_print_format",
-      "value": "Certificate",
-      "property_type": "Data",
-      "doctype_or_field": "DocType"
+      "doc_type": "LMS Settings",
+      "field_name": "payment_gateway",
+      "property": "options",
+      "value": "Payment Gateway",
+      "property_type": null,
+      "doctype_or_field": "DocField"
     },
     {
       "doc_type": "LMS Settings",
@@ -519,12 +519,12 @@
       "doctype_or_field": "DocField"
     },
     {
-      "doc_type": "LMS Settings",
-      "field_name": "payment_gateway",
-      "property": "options",
-      "value": "Payment Gateway",
-      "property_type": null,
-      "doctype_or_field": "DocField"
+      "doc_type": "LMS Certificate",
+      "field_name": null,
+      "property": "default_print_format",
+      "value": "Certificate",
+      "property_type": "Data",
+      "doctype_or_field": "DocType"
     }
   ]
 }
