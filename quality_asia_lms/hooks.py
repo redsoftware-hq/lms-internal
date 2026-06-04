@@ -185,6 +185,11 @@ override_doctype_class = {
 # override_whitelisted_methods = {
 # 	"frappe.desk.doctype.event.event.get_events": "quality_asia_lms.event.get_events"
 # }
+override_whitelisted_methods = {
+	# Force India server-side so the browser-supplied country cannot skip 18% GST.
+	"lms.lms.payments.get_payment_link": "quality_asia_lms.overrides.payments.get_payment_link",
+	"lms.lms.utils.get_order_summary": "quality_asia_lms.overrides.payments.get_order_summary",
+}
 #
 # each overriding function accepts a `data` argument;
 # generated from the base implementation of the doctype dashboard,
