@@ -210,7 +210,10 @@ override_whitelisted_methods = {
 # Request Events
 # ----------------
 # before_request = ["quality_asia_lms.utils.before_request"]
-# after_request = ["quality_asia_lms.utils.after_request"]
+# Inject the brand skin <link> into the LMS SPA shell at SERVE time. This is the
+# deploy-safe path: Frappe Cloud ships apps read-only, so editing _lms.html on
+# disk (after_migrate, below) can't stick there — rewriting the response can.
+after_request = ["quality_asia_lms.brand.inject_brand_css_into_response"]
 
 # Job Events
 # ----------
