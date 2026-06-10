@@ -1,0 +1,22 @@
+[
+ {
+  "doctype": "Custom Field",
+  "name": "LMS Certificate-training_start_date",
+  "dt": "LMS Certificate",
+  "module": "Quality Asia LMS",
+  "fieldname": "training_start_date",
+  "label": "Training Start Date",
+  "fieldtype": "Date",
+  "insert_after": "issue_date"
+ },
+ {
+  "doctype": "Custom Field",
+  "name": "LMS Certificate-training_end_date",
+  "dt": "LMS Certificate",
+  "module": "Quality Asia LMS",
+  "fieldname": "training_end_date",
+  "label": "Training End Date",
+  "fieldtype": "Date",
+  "insert_after": "training_start_date"
+ }
+]

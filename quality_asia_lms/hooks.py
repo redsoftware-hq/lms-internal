@@ -74,10 +74,13 @@ app_license = "mit"
 # ----------
 
 # add methods and filters to jinja environment
-# jinja = {
-# 	"methods": "quality_asia_lms.utils.jinja_methods",
-# 	"filters": "quality_asia_lms.utils.jinja_filters"
-# }
+# Exposes format_training_dates() to the QA Certificate print format.
+jinja = {
+	"methods": [
+		"quality_asia_lms.overrides.certificate.format_training_dates",
+		"quality_asia_lms.overrides.certificate.qa_cert_image",
+	],
+}
 
 # Installation
 # ------------
@@ -87,7 +90,12 @@ after_install = "quality_asia_lms.brand.inject_brand_css"
 
 # Re-inject the brand skin <link> into the (build-generated) LMS SPA shell.
 # bench update runs build -> migrate, so after_migrate self-heals the link.
-after_migrate = "quality_asia_lms.brand.inject_brand_css"
+# Also re-point existing certificates onto the QA print format (runs after the
+# fixtures that create that print format are synced).
+after_migrate = [
+	"quality_asia_lms.brand.inject_brand_css",
+	"quality_asia_lms.overrides.certificate.enforce_qa_certificate_template",
+]
 
 # Uninstallation
 # ------------
@@ -145,13 +153,13 @@ override_doctype_class = {
 # ---------------
 # Hook on document methods and events
 
-# doc_events = {
-# 	"*": {
-# 		"on_update": "method",
-# 		"on_cancel": "method",
-# 		"on_trash": "method"
-# 	}
-# }
+# Force every generated certificate onto the QA print format and auto-fill the
+# two training dates from the issue date.
+doc_events = {
+	"LMS Certificate": {
+		"before_insert": "quality_asia_lms.overrides.certificate.prepare_certificate",
+	},
+}
 
 # Scheduled Tasks
 # ---------------
@@ -262,4 +270,29 @@ after_request = ["quality_asia_lms.brand.inject_brand_css_into_response"]
 # ------------
 # List of apps whose translatable strings should be excluded from this app's translations.
 # ignore_translatable_strings_from = []
+
+# Fixtures
+# --------
+# Shipped-as-code customizations re-applied on every `bench migrate`:
+#   - the two training-date Custom Fields on LMS Certificate
+#   - the Property Setter that makes "QA Certificate" the default print format
+#   - the "QA Certificate" print format itself
+# Order matters: the print format is imported before the Property Setter that names it.
+fixtures = [
+	{
+		"dt": "Custom Field",
+		"filters": [["name", "in", [
+			"LMS Certificate-training_start_date",
+			"LMS Certificate-training_end_date",
+		]]],
+	},
+	{
+		"dt": "Print Format",
+		"filters": [["name", "in", ["QA Certificate"]]],
+	},
+	{
+		"dt": "Property Setter",
+		"filters": [["name", "in", ["LMS Certificate-main-default_print_format"]]],
+	},
+]
 
