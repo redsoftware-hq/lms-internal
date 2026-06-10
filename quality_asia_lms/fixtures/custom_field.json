@@ -28,5 +28,15 @@
   "label": "Address",
   "fieldtype": "Small Text",
   "insert_after": "mobile_no"
+ },
+ {
+  "doctype": "Custom Field",
+  "name": "User-resume",
+  "dt": "User",
+  "module": "Quality Asia LMS",
+  "fieldname": "resume",
+  "label": "Resume",
+  "fieldtype": "Attach",
+  "insert_after": "address"
  }
 ]

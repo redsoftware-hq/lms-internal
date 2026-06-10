@@ -291,6 +291,7 @@ fixtures = [
 			"LMS Certificate-training_start_date",
 			"LMS Certificate-training_end_date",
 			"User-address",
+			"User-resume",
 		]]],
 	},
 	{
