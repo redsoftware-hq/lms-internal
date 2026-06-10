@@ -18,5 +18,15 @@
   "label": "Training End Date",
   "fieldtype": "Date",
   "insert_after": "training_start_date"
+ },
+ {
+  "doctype": "Custom Field",
+  "name": "User-address",
+  "dt": "User",
+  "module": "Quality Asia LMS",
+  "fieldname": "address",
+  "label": "Address",
+  "fieldtype": "Small Text",
+  "insert_after": "mobile_no"
  }
 ]

@@ -82,6 +82,11 @@ jinja = {
 	],
 }
 
+# Custom self-signup form (Name, Email, mandatory Mobile, optional Address) on
+# Frappe's /login#signup page. Wins over the stock/LMS form because this app
+# loads last (login.py uses signup_form_template[-1]).
+signup_form_template = "quality_asia_lms.overrides.signup.get_signup_template"
+
 # Installation
 # ------------
 
@@ -285,6 +290,7 @@ fixtures = [
 		"filters": [["name", "in", [
 			"LMS Certificate-training_start_date",
 			"LMS Certificate-training_end_date",
+			"User-address",
 		]]],
 	},
 	{
