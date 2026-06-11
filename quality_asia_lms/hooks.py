@@ -100,7 +100,6 @@ after_install = "quality_asia_lms.brand.inject_brand_css"
 after_migrate = [
 	"quality_asia_lms.brand.inject_brand_css",
 	"quality_asia_lms.overrides.certificate.enforce_qa_certificate_template",
-	"quality_asia_lms.overrides.portal.ensure_password_reset_link",
 ]
 
 # Uninstallation
