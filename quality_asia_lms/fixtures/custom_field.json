@@ -21,13 +21,23 @@
  },
  {
   "doctype": "Custom Field",
+  "name": "User-company_name",
+  "dt": "User",
+  "module": "Quality Asia LMS",
+  "fieldname": "company_name",
+  "label": "Company Name",
+  "fieldtype": "Data",
+  "insert_after": "mobile_no"
+ },
+ {
+  "doctype": "Custom Field",
   "name": "User-address",
   "dt": "User",
   "module": "Quality Asia LMS",
   "fieldname": "address",
-  "label": "Address",
+  "label": "Residential Address",
   "fieldtype": "Small Text",
-  "insert_after": "mobile_no"
+  "insert_after": "company_name"
  },
  {
   "doctype": "Custom Field",

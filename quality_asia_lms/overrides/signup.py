@@ -5,19 +5,36 @@ Frappe's /login#signup page renders the template returned by the
 loads after `lms`, `get_signup_template` below overrides the stock/LMS signup
 form with no fork of either app.
 
-The form collects Name, Email, mandatory Mobile Number, and optional Address;
-`sign_up` mirrors `lms.lms.user.sign_up` (roles, verification email, country
-from IP) and additionally stores mobile_no (standard) and address (custom field).
+The form collects mandatory Name, Email and Mobile Number, plus optional Company
+Name, Residential Address, Profile Photo and Resume/CV. `sign_up` mirrors
+`lms.lms.user.sign_up` (roles, verification email, country from IP) and additionally
+stores mobile_no (standard) and the custom fields (company_name, address, resume) and
+the standard user_image.
+
+The signup page is served to guests, so the two file uploads can't use the
+login-only `/api/method/upload_file` endpoint that the Edit Profile modal (QA-15)
+uses. Instead the form posts the files as base64 inside this same `sign_up` call;
+they're decoded, size/type-checked and saved here only once the User is created —
+so the rate limit below also caps file writes and there's no abusable guest upload.
 """
 
+import base64
+import os
 import re
 
 import frappe
 from frappe import _
 from frappe.utils import cint, escape_html, random_string
+from frappe.utils.file_manager import save_file
 from frappe.website.utils import is_signup_disabled
 
 ALLOWED_MOBILE_CHARS = re.compile(r"^[+0-9\s\-]+$")
+
+# Keep uploads small so the DB/attachments don't bloat from self-signups.
+ALLOWED_PHOTO_EXT = {".jpg", ".jpeg", ".png", ".webp"}
+ALLOWED_RESUME_EXT = {".pdf", ".doc", ".docx"}
+MAX_PHOTO_BYTES = 2 * 1024 * 1024  # 2 MB
+MAX_RESUME_BYTES = 5 * 1024 * 1024  # 5 MB
 
 
 def get_signup_template():
@@ -37,14 +54,60 @@ def _validate_mobile(mobile_no):
 		frappe.throw(_("Please enter a valid mobile number"))
 
 
+def _save_signup_file(filename, b64, user_name, allowed_ext, max_bytes, is_private):
+	"""Decode an optional base64 upload from the signup form, validate its type and
+	size, and attach it to the freshly created User. Returns the file_url or None."""
+	filename = (filename or "").strip()
+	b64 = (b64 or "").strip()
+	if not filename or not b64:
+		return None
+
+	ext = os.path.splitext(filename)[1].lower()
+	if ext not in allowed_ext:
+		frappe.throw(_("Unsupported file type for {0}").format(escape_html(filename)))
+
+	try:
+		content = base64.b64decode(b64, validate=True)
+	except Exception:
+		frappe.throw(_("Could not read the uploaded file"))
+
+	if not content:
+		return None
+	if len(content) > max_bytes:
+		frappe.throw(_("File {0} is too large").format(escape_html(filename)))
+
+	# save_file runs Frappe's own content checks (e.g. it rejects PDFs containing
+	# JavaScript and can't parse corrupt files). Surface those as a clean message
+	# instead of a raw server error — the request rolls back, so no half-made user.
+	try:
+		file_doc = save_file(filename, content, "User", user_name, decode=False, is_private=is_private)
+	except frappe.ValidationError:
+		raise
+	except Exception:
+		frappe.clear_last_message()
+		frappe.throw(_("The file {0} could not be saved. Please upload a valid file.").format(escape_html(filename)))
+	return file_doc.file_url
+
+
 @frappe.whitelist(allow_guest=True)  # nosemgrep: frappe-semgrep-rules.rules.security.guest-whitelisted-method
-def sign_up(email: str, full_name: str, mobile_no: str, address: str = ""):
+def sign_up(
+	email: str,
+	full_name: str,
+	mobile_no: str,
+	company_name: str = "",
+	address: str = "",
+	photo_filename: str = "",
+	photo_content: str = "",
+	resume_filename: str = "",
+	resume_content: str = "",
+):
 	if is_signup_disabled():
 		frappe.throw(_("Sign Up is disabled"), _("Not Allowed"))
 
 	email = (email or "").strip()
 	full_name = (full_name or "").strip()
 	mobile_no = (mobile_no or "").strip()
+	company_name = (company_name or "").strip()
 	address = (address or "").strip()
 
 	if not full_name or not email:
@@ -73,6 +136,7 @@ def sign_up(email: str, full_name: str, mobile_no: str, address: str = ""):
 			"email": email,
 			"first_name": escape_html(full_name),
 			"mobile_no": mobile_no,
+			"company_name": company_name,
 			"address": address,
 			"country": "",
 			"enabled": 1,
@@ -97,6 +161,24 @@ def sign_up(email: str, full_name: str, mobile_no: str, address: str = ""):
 		set_country_from_ip(None, user.name)
 	except Exception:
 		frappe.clear_last_message()
+
+	# Optional uploads: attach to the new User last (no user.save() runs after this,
+	# so the db.set_value below can't trip the stale-timestamp check). Photo is public
+	# (shown as the avatar); resume is private. A bad file surfaces a clean error and
+	# rolls back the whole request rather than leaving a half-made account.
+	file_values = {}
+	photo_url = _save_signup_file(
+		photo_filename, photo_content, user.name, ALLOWED_PHOTO_EXT, MAX_PHOTO_BYTES, is_private=0
+	)
+	if photo_url:
+		file_values["user_image"] = photo_url
+	resume_url = _save_signup_file(
+		resume_filename, resume_content, user.name, ALLOWED_RESUME_EXT, MAX_RESUME_BYTES, is_private=1
+	)
+	if resume_url:
+		file_values["resume"] = resume_url
+	if file_values:
+		frappe.db.set_value("User", user.name, file_values)
 
 	if user.flags.email_sent:
 		return 1, _("Please check your email for verification")

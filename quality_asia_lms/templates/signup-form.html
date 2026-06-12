@@ -9,6 +9,20 @@
     .signup-form .reqd-star {
         color: #e20a0a;
     }
+    .signup-form .file-hint {
+        display: block;
+        text-align: left;
+        font-size: 11px;
+        color: #888;
+        margin-top: 2px;
+    }
+    .signup-form .file-err {
+        display: none;
+        text-align: left;
+        font-size: 11px;
+        color: #e20a0a;
+        margin-top: 2px;
+    }
 </style>
 
 <form class="signup-form" role="form">
@@ -29,9 +43,26 @@
                 placeholder="{{ _('Mobile Number') }}" pattern="[+0-9\s\-]{7,20}" required>
         </div>
         <div class="form-group">
-            <label class="form-label" for="signup_address">{{ _("Address") }}</label>
+            <label class="form-label" for="signup_company">{{ _("Company Name") }}</label>
+            <input type="text" id="signup_company" class="form-control"
+                placeholder="{{ _('Company Name (optional)') }}">
+        </div>
+        <div class="form-group">
+            <label class="form-label" for="signup_address">{{ _("Residential Address") }}</label>
             <textarea id="signup_address" class="form-control" rows="2"
-                placeholder="{{ _('Address (optional)') }}"></textarea>
+                placeholder="{{ _('Residential Address (optional)') }}"></textarea>
+        </div>
+        <div class="form-group">
+            <label class="form-label" for="signup_photo">{{ _("Profile Photo") }}</label>
+            <input type="file" id="signup_photo" class="form-control" accept=".jpg,.jpeg,.png,.webp">
+            <small class="file-hint">{{ _("JPG / PNG / WEBP, up to 2 MB (optional)") }}</small>
+            <small class="file-err" id="signup_photo_err"></small>
+        </div>
+        <div class="form-group">
+            <label class="form-label" for="signup_resume">{{ _("Resume / CV") }}</label>
+            <input type="file" id="signup_resume" class="form-control" accept=".pdf,.doc,.docx">
+            <small class="file-hint">{{ _("PDF / DOC / DOCX, up to 5 MB (optional)") }}</small>
+            <small class="file-err" id="signup_resume_err"></small>
         </div>
     </div>
     <div class="page-card-actions">
@@ -51,11 +82,41 @@
         });
     });
 
-    const signup = (e) => {
+    const PHOTO_RE = /\.(jpe?g|png|webp)$/i;
+    const RESUME_RE = /\.(pdf|docx?)$/i;
+    const MAX_PHOTO_MB = 2;
+    const MAX_RESUME_MB = 5;
+
+    // Returns null if ok, else a user-facing error string.
+    const check_file = (file, re, max_mb) => {
+        if (!re.test(file.name)) return '{{ _("Unsupported file type") }}';
+        if (file.size > max_mb * 1024 * 1024) {
+            return '{{ _("File too large (max ") }}' + max_mb + ' MB)';
+        }
+        return null;
+    };
+
+    const show_file_err = (el_id, msg) => {
+        const el = document.getElementById(el_id);
+        if (!el) return;
+        if (msg) { el.textContent = msg; el.style.display = "block"; }
+        else { el.textContent = ""; el.style.display = "none"; }
+    };
+
+    // Read a File as bare base64 (strips the "data:...;base64," prefix).
+    const read_base64 = (file) => new Promise((resolve, reject) => {
+        const r = new FileReader();
+        r.onload = () => resolve(String(r.result).split(",")[1] || "");
+        r.onerror = () => reject(r.error);
+        r.readAsDataURL(file);
+    });
+
+    const signup = async (e) => {
         e.preventDefault();
         const email = ($("#signup_email").val() || "").trim();
         const full_name = frappe.utils.xss_sanitise(($("#signup_fullname").val() || "").trim());
         const mobile_no = ($("#signup_mobile").val() || "").trim();
+        const company_name = ($("#signup_company").val() || "").trim();
         const address = ($("#signup_address").val() || "").trim();
 
         if (!email || !validate_email(email) || !full_name) {
@@ -69,14 +130,39 @@
             return false;
         }
 
+        const photo_file = ($("#signup_photo")[0].files || [])[0];
+        const resume_file = ($("#signup_resume")[0].files || [])[0];
+
+        const photo_err = photo_file ? check_file(photo_file, PHOTO_RE, MAX_PHOTO_MB) : null;
+        const resume_err = resume_file ? check_file(resume_file, RESUME_RE, MAX_RESUME_MB) : null;
+        show_file_err("signup_photo_err", photo_err);
+        show_file_err("signup_resume_err", resume_err);
+        if (photo_err || resume_err) return false;
+
+        const args = {
+            "email": email,
+            "full_name": full_name,
+            "mobile_no": mobile_no,
+            "company_name": company_name,
+            "address": address
+        };
+        try {
+            if (photo_file) {
+                args.photo_filename = photo_file.name;
+                args.photo_content = await read_base64(photo_file);
+            }
+            if (resume_file) {
+                args.resume_filename = resume_file.name;
+                args.resume_content = await read_base64(resume_file);
+            }
+        } catch (err) {
+            login.set_status('{{ _("Could not read the uploaded file") }}', 'red');
+            return false;
+        }
+
         frappe.call({
             method: "quality_asia_lms.overrides.signup.sign_up",
-            args: {
-                "email": email,
-                "full_name": full_name,
-                "mobile_no": mobile_no,
-                "address": address
-            },
+            args: args,
             statusCode: login.login_handlers
         })
         return false;
