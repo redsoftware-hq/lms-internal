@@ -388,7 +388,7 @@ def _save_private_file(filename, content):
 	existing = frappe.db.get_value("File", {"file_name": filename, "is_private": 1})
 	if existing:
 		frappe.delete_doc("File", existing, ignore_permissions=True, force=True)
-	save_file(filename, content, is_private=1)
+	save_file(filename, content, dt="", dn="", is_private=1)
 
 
 def migrate_if_dump_present():
