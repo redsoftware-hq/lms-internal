@@ -329,23 +329,23 @@ def run(path=None, template=None):
 			failed += 1
 
 	import csv as _csv
-	from datetime import datetime
+	import io
 
 	frappe.db.commit()
 
-	private_files = frappe.get_site_path("private", "files")
-
 	if placeholder_log:
-		with open(os.path.join(private_files, "dwm_placeholder_users.csv"), "w") as f:
-			_csv.writer(f).writerows(
-				[("candidate_name", "mobile", "placeholder_email"), *placeholder_log]
-			)
+		buf = io.StringIO()
+		_csv.writer(buf).writerows(
+			[("candidate_name", "mobile", "placeholder_email"), *placeholder_log]
+		)
+		_save_private_file("dwm_placeholder_users.csv", buf.getvalue())
 
 	if unmapped_rows:
-		with open(os.path.join(private_files, "dwm_unmapped_rows.tsv"), "w") as f:
-			writer = _csv.DictWriter(f, fieldnames=sorted(_NEEDED), delimiter="\t")
-			writer.writeheader()
-			writer.writerows(unmapped_rows)
+		buf = io.StringIO()
+		writer = _csv.DictWriter(buf, fieldnames=sorted(_NEEDED), delimiter="\t")
+		writer.writeheader()
+		writer.writerows(unmapped_rows)
+		_save_private_file("dwm_unmapped_rows.tsv", buf.getvalue())
 
 	summary = (
 		f"created={created} skipped={skipped} unmapped={len(unmapped_rows)} "
@@ -378,11 +378,24 @@ def validate():
 	return result
 
 
+def _save_private_file(filename, content):
+	"""Write content as a private File record visible in Frappe Desk → File Manager."""
+	from frappe.utils.file_manager import save_file
+
+	if isinstance(content, str):
+		content = content.encode("utf-8")
+	# remove stale record so save_file doesn't collide on duplicate name
+	existing = frappe.db.get_value("File", {"file_name": filename, "is_private": 1})
+	if existing:
+		frappe.delete_doc("File", existing, ignore_permissions=True, force=True)
+	save_file(filename, content, is_private=1)
+
+
 def migrate_if_dump_present():
 	"""Called by after_migrate hook — no-op when dump file is absent.
 
-	Runs the migration and writes results to private/files/dwm_migration_log.txt
-	(accessible via Frappe Desk → File Manager) so no console access is needed.
+	Runs the migration and saves results as private File records visible in
+	Frappe Desk → File Manager — no console access needed.
 	"""
 	from datetime import datetime
 
@@ -393,8 +406,6 @@ def migrate_if_dump_present():
 	run_summary = run(path)
 	validate_summary = validate()
 
-	log_path = frappe.get_site_path("private", "files", "dwm_migration_log.txt")
-	with open(log_path, "a") as f:
-		f.write(f"\n--- {datetime.utcnow().isoformat()} UTC ---\n")
-		f.write(f"run:      {run_summary}\n")
-		f.write(f"validate: {validate_summary}\n")
+	log = f"--- {datetime.utcnow().isoformat()} UTC ---\nrun:      {run_summary}\nvalidate: {validate_summary}\n"
+	_save_private_file("dwm_migration_log.txt", log)
+	frappe.db.commit()
