@@ -292,6 +292,7 @@ fixtures = [
 			"LMS Certificate-training_end_date",
 			"LMS Certificate-training_dates",
 			"LMS Certificate-candidate_name_as_printed",
+			"User-company_name",
 			"User-address",
 			"User-resume",
 		]]],
