@@ -1,57 +1,181 @@
-import csv
+import gzip
+import os
 import re
 
 import frappe
 
 TEMPLATE = "QA Certificate"
 EMAIL_RE = re.compile(r"^[^@\s]+@[^@\s]+\.[^@\s]+$")
+_TABLE = "tabInternal Auditor Training Certificate"
+_NEEDED = frozenset([
+	"name", "candidate_name", "email_id", "contact_number",
+	"training_program_name", "date_of_issue", "training_dates",
+	"creation", "modified",
+])
 
 
-def setup():
-	from frappe.custom.doctype.custom_field.custom_field import create_custom_fields
+def _default_dump_path():
+	return frappe.get_site_path("private", "files", "dwm_certificates.sql.gz")
 
-	create_custom_fields(
-		{
-			"LMS Certificate": [
-				dict(fieldname="training_dates", label="Training Dates", fieldtype="Data", insert_after="expiry_date"),
-				dict(
-					fieldname="candidate_name_as_printed",
-					label="Candidate Name (as printed)",
-					fieldtype="Data",
-					insert_after="member_name",
-					read_only=1,
-				),
-			]
-		}
+
+# ── SQL dump parser ──────────────────────────────────────────────────────────
+
+
+def _split_row_groups(insert_line):
+	"""Extract individual row contents from a VALUES (...),(...)... INSERT line."""
+	idx = insert_line.upper().find("VALUES ")
+	if idx == -1:
+		return []
+	tail = insert_line[idx + 7 :].rstrip(";\n ")
+	groups = []
+	depth = 0
+	in_str = False
+	start = None
+	i = 0
+	while i < len(tail):
+		c = tail[i]
+		if in_str:
+			if c == "\\":
+				i += 2
+				continue
+			elif c == "'":
+				in_str = False
+		else:
+			if c == "'":
+				in_str = True
+			elif c == "(":
+				if depth == 0:
+					start = i + 1
+				depth += 1
+			elif c == ")":
+				depth -= 1
+				if depth == 0 and start is not None:
+					groups.append(tail[start:i])
+					start = None
+		i += 1
+	return groups
+
+
+def _parse_sql_values(s):
+	"""Parse comma-separated SQL values from inside a row group string."""
+	_ESC = {"n": "\n", "t": "\t", "r": "\r", "0": "\0"}
+	values = []
+	i = 0
+	n = len(s)
+	while i < n:
+		while i < n and s[i] in (" ", "\t"):
+			i += 1
+		if i >= n:
+			break
+		if s[i] == "'":
+			i += 1
+			buf = []
+			while i < n:
+				c = s[i]
+				if c == "\\":
+					i += 1
+					if i < n:
+						buf.append(_ESC.get(s[i], s[i]))
+						i += 1
+				elif c == "'":
+					i += 1
+					break
+				else:
+					buf.append(c)
+					i += 1
+			values.append("".join(buf))
+		elif s[i : i + 4] == "NULL":
+			values.append(None)
+			i += 4
+		else:
+			j = i
+			while i < n and s[i] != ",":
+				i += 1
+			values.append(s[j:i].strip() or None)
+		while i < n and s[i] in (" ", "\t"):
+			i += 1
+		if i < n and s[i] == ",":
+			i += 1
+	return values
+
+
+def _iter_rows(dump_path):
+	"""Stream certificate record dicts from a Frappe mysqldump .sql.gz file."""
+	columns = []
+	in_create = False
+
+	with gzip.open(dump_path, "rt", encoding="utf-8", errors="replace") as f:
+		for line in f:
+			line = line.rstrip("\n")
+
+			if f"CREATE TABLE `{_TABLE}`" in line:
+				in_create = True
+				columns = []
+				continue
+
+			if in_create:
+				stripped = line.strip()
+				if stripped.startswith("`"):
+					m = re.match(r"`([^`]+)`", stripped)
+					if m:
+						columns.append(m.group(1))
+				if stripped.startswith(")"):
+					in_create = False
+				continue
+
+			if columns and f"INSERT INTO `{_TABLE}`" in line:
+				for group in _split_row_groups(line):
+					vals = _parse_sql_values(group)
+					if len(vals) != len(columns):
+						continue
+					row = dict(zip(columns, vals))
+					yield {k: row.get(k) for k in _NEEDED}
+
+
+# ── Course resolution ────────────────────────────────────────────────────────
+
+_course_titles: dict | None = None  # normalized title -> course name
+
+
+def _build_course_cache():
+	global _course_titles
+	_course_titles = {}
+	for name, title in frappe.get_all("LMS Course", fields=["name", "title"], as_list=True):
+		key = (title or "").strip().lower()
+		if key:
+			_course_titles[key] = name
+
+
+_YEAR_SUFFIX_RE = re.compile(r":\d{4}$")
+
+
+def _normalize(s):
+	"""Strip trailing ':YYYY' and whitespace, lowercase."""
+	return _YEAR_SUFFIX_RE.sub("", (s or "").strip()).strip().lower()
+
+
+def _resolve_course(program):
+	if _course_titles is None:
+		_build_course_cache()
+	key = (program or "").strip().lower()
+	stripped = _normalize(program)
+	# 1. exact match, 2. year-stripped exact match, 3. year-stripped substring of course title
+	return (
+		_course_titles.get(key)
+		or _course_titles.get(stripped)
+		or next((name for title, name in _course_titles.items() if stripped in title), None)
 	)
-	frappe.db.commit()
 
 
-def _course(program, cache={}):
-	if program not in cache:
-		name = frappe.db.get_value("LMS Course", {"title": program})
-		if not name:
-			doc = frappe.get_doc(
-				{
-					"doctype": "LMS Course",
-					"title": program,
-					"short_introduction": f"{program} Internal Auditor Training",
-					"description": program,
-					"published": 1,
-				}
-			)
-			doc.flags.ignore_permissions = True
-			doc.flags.ignore_mandatory = True
-			name = doc.insert().name
-		cache[program] = name
-	return cache[program]
+# ── User helpers ─────────────────────────────────────────────────────────────
+
+_user_cache: set = set()
 
 
 def _clean_mobile(raw):
 	if not raw:
 		return None
 	digits = re.sub(r"[^\d+]", "", raw.strip())
-	# keep leading + for international; strip if nothing else useful
 	digits = re.sub(r"^\++", "+", digits)
 	pure = digits.lstrip("+")
 	return digits if 7 <= len(pure) <= 15 else None
@@ -60,25 +184,25 @@ def _clean_mobile(raw):
 def _is_valid_email(addr):
 	try:
 		from frappe.utils import validate_email_address
+
 		validate_email_address(addr, throw=True)
 		return True
 	except Exception:
 		return False
 
 
-def _user(name, email, mobile, placeholder_log, cache={}):
+def _user(name, email, mobile, placeholder_log):
 	email = (email or "").strip().lower()
 	clean_mobile = _clean_mobile(mobile)
 	if not EMAIL_RE.match(email) or not _is_valid_email(email):
 		suffix = re.sub(r"\D", "", mobile or "")[-4:] or "0000"
 		local = frappe.scrub(name).replace("_", ".")
-		local = re.sub(r"\.{2,}", ".", local).strip(".")  # remove consecutive/leading/trailing dots
+		local = re.sub(r"\.{2,}", ".", local).strip(".")
 		email = f"{local or 'candidate'}.{suffix}@placeholder.qualityasia.in"
 		placeholder_log.append((name, mobile, email))
-	if email not in cache:
+	if email not in _user_cache:
 		if not frappe.db.exists("User", email):
 			parts = (name or "").strip().split(" ", 1)
-			# skip mobile if it's already taken by another user (unique index on mobile_no)
 			if clean_mobile and frappe.db.exists("User", {"mobile_no": clean_mobile}):
 				clean_mobile = None
 			frappe.get_doc(
@@ -93,30 +217,66 @@ def _user(name, email, mobile, placeholder_log, cache={}):
 					"roles": [{"role": "LMS Student"}],
 				}
 			).insert(ignore_permissions=True)
-		cache[email] = True
+		_user_cache.add(email)
 	return email
 
 
-def run(path, template=None):
+# ── Entry points ─────────────────────────────────────────────────────────────
+
+
+def reconcile(path=None):
+	"""Preview how each source training program resolves against the current site.
+
+	Read-only — run this before run() to confirm course title matching.
+	Programs shown as UNMAPPED will be skipped until a course with that title exists.
+	"""
+	path = path or _default_dump_path()
+	rows = list(_iter_rows(path))
+	programs: dict[str, int] = {}
+	for row in rows:
+		p = row["training_program_name"]
+		programs[p] = programs.get(p, 0) + 1
+	existing = sum(1 for r in rows if frappe.db.exists("LMS Certificate", r["name"]))
+	print(f"{path}: {len(rows)} rows, {existing} already migrated\n")
+	print(f"{'rows':>6}  {'program':<50} resolution")
+	for program, count in sorted(programs.items(), key=lambda kv: -kv[1]):
+		name = _resolve_course(program)
+		status = f"-> {name}" if name else "UNMAPPED (rows will be skipped)"
+		print(f"{count:>6}  {program:<50} {status}")
+
+
+def run(path=None, template=None):
+	path = path or _default_dump_path()
 	template = template or TEMPLATE
-	placeholder_log = []
-	# bypass user-creation throttle, queue size check, and other import-unfriendly validations
+	placeholder_log: list = []
+
+	# reset module-level caches so each run picks up current DB state
+	global _course_titles, _user_cache
+	_course_titles = None
+	_user_cache = set()
+
+	# bypass user-creation throttle, queue size check, and import-unfriendly validations
 	frappe.flags.in_import = True
-	frappe.flags.in_install = True  # makes User.on_update run create_contact synchronously (bypasses queue size check)
-	with open(path) as f:
-		rows = list(csv.DictReader(f, delimiter="\t"))
+	frappe.flags.in_install = True  # makes User.on_update run create_contact synchronously
+
+	rows = list(_iter_rows(path))
 
 	created = skipped = failed = 0
+	unmapped_rows: list = []
 	for row in rows:
 		old_id = row["name"]
 		if frappe.db.exists("LMS Certificate", old_id):
 			skipped += 1
 			continue
+		course = _resolve_course(row["training_program_name"])
+		if not course:
+			unmapped_rows.append(row)
+			continue
 		try:
-			member = _user(row["candidate_name"], row.get("email_id"), row.get("contact_number"), placeholder_log)
-			course = _course(row["training_program_name"])
+			member = _user(
+				row["candidate_name"], row.get("email_id"), row.get("contact_number"), placeholder_log
+			)
 
-			# Enrollment must exist before inserting the certificate (LMS validates it)
 			enrollment_name = frappe.db.get_value("LMS Enrollment", {"member": member, "course": course})
 			if not enrollment_name:
 				enrollment = frappe.get_doc(
@@ -145,7 +305,9 @@ def run(path, template=None):
 				}
 			)
 			cert.flags.ignore_permissions = True
-			cert.flags.ignore_validate = True  # bypass duplicate-cert-per-course check; historical data may have multiple
+			cert.flags.ignore_validate = (
+				True  # bypass duplicate-cert-per-course check; historical data may have multiples
+			)
 			cert.insert(set_name=old_id)
 
 			frappe.db.set_value(
@@ -154,9 +316,9 @@ def run(path, template=None):
 				{"creation": row["creation"], "modified": row["modified"]},
 				update_modified=False,
 			)
-
-			# Link the certificate back to the enrollment
-			frappe.db.set_value("LMS Enrollment", enrollment_name, "certificate", old_id, update_modified=False)
+			frappe.db.set_value(
+				"LMS Enrollment", enrollment_name, "certificate", old_id, update_modified=False
+			)
 
 			created += 1
 			if created % 500 == 0:
@@ -166,14 +328,35 @@ def run(path, template=None):
 			frappe.log_error(title=f"Cert migration failed: {old_id}")
 			failed += 1
 
+	import csv as _csv
+	from datetime import datetime
+
 	frappe.db.commit()
+
+	private_files = frappe.get_site_path("private", "files")
+
 	if placeholder_log:
-		with open("/tmp/placeholder_users.csv", "w") as f:
-			csv.writer(f).writerows([("candidate_name", "mobile", "placeholder_email")] + placeholder_log)
-	print(f"created={created} skipped={skipped} failed={failed} placeholders={len(placeholder_log)}")
+		with open(os.path.join(private_files, "dwm_placeholder_users.csv"), "w") as f:
+			_csv.writer(f).writerows(
+				[("candidate_name", "mobile", "placeholder_email"), *placeholder_log]
+			)
+
+	if unmapped_rows:
+		with open(os.path.join(private_files, "dwm_unmapped_rows.tsv"), "w") as f:
+			writer = _csv.DictWriter(f, fieldnames=sorted(_NEEDED), delimiter="\t")
+			writer.writeheader()
+			writer.writerows(unmapped_rows)
+
+	summary = (
+		f"created={created} skipped={skipped} unmapped={len(unmapped_rows)} "
+		f"failed={failed} placeholders={len(placeholder_log)}"
+	)
+	print(summary)
+	return summary
 
 
 def validate():
+	"""Return a summary string of current certificate/course/user counts."""
 	certs = frappe.db.count("LMS Certificate")
 	courses = frappe.db.count("LMS Course")
 	students = frappe.db.count("User", {"user_type": "Website User"})
@@ -184,9 +367,34 @@ def validate():
 		WHERE e.name IS NULL AND c.course IS NOT NULL
 	""")
 	unpublished = frappe.db.count("LMS Certificate", {"published": 0})
-	print(
+	lines = [
 		f"certificates={certs} courses={courses} website_users={students} "
 		f"orphan_certs={len(orphans)} unpublished={unpublished}"
-	)
+	]
 	if orphans:
-		print("ORPHANS:", [o[0] for o in orphans][:20])
+		lines.append(f"ORPHANS: {[o[0] for o in orphans][:20]}")
+	result = "\n".join(lines)
+	print(result)
+	return result
+
+
+def migrate_if_dump_present():
+	"""Called by after_migrate hook — no-op when dump file is absent.
+
+	Runs the migration and writes results to private/files/dwm_migration_log.txt
+	(accessible via Frappe Desk → File Manager) so no console access is needed.
+	"""
+	from datetime import datetime
+
+	path = _default_dump_path()
+	if not os.path.exists(path):
+		return
+
+	run_summary = run(path)
+	validate_summary = validate()
+
+	log_path = frappe.get_site_path("private", "files", "dwm_migration_log.txt")
+	with open(log_path, "a") as f:
+		f.write(f"\n--- {datetime.utcnow().isoformat()} UTC ---\n")
+		f.write(f"run:      {run_summary}\n")
+		f.write(f"validate: {validate_summary}\n")
