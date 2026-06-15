@@ -21,6 +21,27 @@
  },
  {
   "doctype": "Custom Field",
+  "name": "LMS Certificate-training_dates",
+  "dt": "LMS Certificate",
+  "module": "Quality Asia LMS",
+  "fieldname": "training_dates",
+  "label": "Training Dates",
+  "fieldtype": "Data",
+  "insert_after": "expiry_date"
+ },
+ {
+  "doctype": "Custom Field",
+  "name": "LMS Certificate-candidate_name_as_printed",
+  "dt": "LMS Certificate",
+  "module": "Quality Asia LMS",
+  "fieldname": "candidate_name_as_printed",
+  "label": "Candidate Name (as printed)",
+  "fieldtype": "Data",
+  "insert_after": "member_name",
+  "read_only": 1
+ },
+ {
+  "doctype": "Custom Field",
   "name": "User-company_name",
   "dt": "User",
   "module": "Quality Asia LMS",

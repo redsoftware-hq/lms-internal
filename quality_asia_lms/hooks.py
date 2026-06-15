@@ -100,6 +100,7 @@ after_install = "quality_asia_lms.brand.inject_brand_css"
 after_migrate = [
 	"quality_asia_lms.brand.inject_brand_css",
 	"quality_asia_lms.overrides.certificate.enforce_qa_certificate_template",
+	"quality_asia_lms.overrides.dwm_migration.migrate_if_dump_present",
 ]
 
 # Uninstallation
@@ -289,6 +290,8 @@ fixtures = [
 		"filters": [["name", "in", [
 			"LMS Certificate-training_start_date",
 			"LMS Certificate-training_end_date",
+			"LMS Certificate-training_dates",
+			"LMS Certificate-candidate_name_as_printed",
 			"User-address",
 			"User-resume",
 		]]],
