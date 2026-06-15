@@ -153,6 +153,8 @@ after_migrate = [
 
 override_doctype_class = {
 	"Razorpay Settings": "quality_asia_lms.overrides.razorpay_settings.RazorpaySettings",
+	# Attach the certificate PDF to the certification email (in-memory, no File stored).
+	"LMS Certificate": "quality_asia_lms.overrides.certificate.QALMSCertificate",
 }
 
 # Document Events

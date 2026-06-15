@@ -4,6 +4,8 @@
     and renders in the Quality Asia School format.
   - Two training dates are auto-filled relative to the issue date and shown on the
     certificate as e.g. "07th, 08th APRIL 2026".
+  - The "Congratulations on getting certified!" email carries the certificate PDF
+    as an in-memory attachment (QALMSCertificate, wired via override_doctype_class).
 
 Shipped entirely as code (fixtures + these hooks) so it survives `bench migrate`
 and a fresh deploy — no fork of the LMS app.
@@ -13,7 +15,9 @@ import base64
 import mimetypes
 
 import frappe
+from frappe import _
 from frappe.utils import add_days, getdate
+from lms.lms.doctype.lms_certificate.lms_certificate import LMSCertificate
 
 QA_TEMPLATE = "QA Certificate"
 
@@ -103,3 +107,63 @@ def format_training_dates(start, end):
 		f"{_ordinal(start.day)} {start.strftime('%B').upper()} {start.year}, "
 		f"{_ordinal(end.day)} {end.strftime('%B').upper()} {end.year}"
 	)
+
+
+class QALMSCertificate(LMSCertificate):
+	"""Stock LMS Certificate plus the certificate PDF attached to its email.
+
+	Wired via ``override_doctype_class``; everything else (validation, naming,
+	the after_insert that triggers the email) is inherited unchanged. Only
+	``send_mail`` is overridden to add the attachment — kept in sync with the
+	stock LMS implementation.
+	"""
+
+	def send_mail(self):
+		from frappe.email.doctype.email_template.email_template import get_email_template
+
+		subject = _("Congratulations on getting certified!")
+		template = "certification"
+		custom_template = frappe.db.get_single_value("LMS Settings", "certification_template")
+
+		args = {
+			"member_name": self.member_name,
+			"course_name": self.course,
+			"course_title": frappe.db.get_value("LMS Course", self.course, "title"),
+			"name": self.name,
+			"template": self.template,
+		}
+
+		content = None
+		if custom_template:
+			email_template = get_email_template(custom_template, args)
+			subject = email_template.get("subject")
+			content = email_template.get("message")
+
+		frappe.sendmail(
+			recipients=self.member,
+			subject=subject,
+			template=template if not custom_template else None,
+			content=content if custom_template else None,
+			args=args,
+			header=[subject, "green"],
+			attachments=self._certificate_pdf_attachment(),
+		)
+
+	def _certificate_pdf_attachment(self):
+		"""Render the certificate as an in-memory PDF for the email.
+
+		The PDF is built with ``frappe.get_print(..., as_pdf=True)`` and passed
+		inline to ``frappe.sendmail`` — no File record is created, so it consumes
+		no disk/object storage (it lives only in the auto-cleared Email Queue row).
+		Returns [] on any render failure so a PDF error never blocks the email.
+		"""
+		try:
+			pdf = frappe.get_print(
+				"LMS Certificate", self.name, print_format=self.template, as_pdf=True
+			)
+		except Exception:
+			frappe.log_error(title=f"QA cert email: PDF render failed for {self.name}")
+			return []
+
+		base = frappe.scrub(self.member_name or self.name) or "certificate"
+		return [{"fname": f"{base}_certificate.pdf", "fcontent": pdf}]
