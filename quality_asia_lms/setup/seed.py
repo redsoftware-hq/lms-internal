@@ -39,8 +39,8 @@ def _log(msg):
 
 
 # --------------------------------------------------------------------------- files
-def seed_files():
-	manifest = _load("files.json") or []
+def _copy_files(manifest):
+	"""Copy bundled files to the site and ensure a File record exists. Returns (copied, created)."""
 	copied = created = 0
 	for f in manifest:
 		url = f["file_url"]
@@ -67,6 +67,12 @@ def seed_files():
 				created += 1
 			except Exception:
 				frappe.log_error(title=f"qa-seed: File record skipped for {url}")
+	return copied, created
+
+
+def seed_files():
+	manifest = _load("files.json") or []
+	copied, created = _copy_files(manifest)
 	_log(f"files: {len(manifest)} referenced, {copied} copied to disk, {created} File records created")
 
 
@@ -181,6 +187,67 @@ def seed_courses():
 	_log(f"courses: {len(data)} course(s) upserted (update-to-match snapshot)")
 
 
+# ----------------------------------------------------------- ISO auditor courses
+def seed_iso_auditor_courses():
+	"""The 10 free/paid ISO Internal Auditor courses generated from the client's
+	content sheet. Owns these course slugs end-to-end and overrides whatever the
+	earlier seed_courses() produced for the same slugs (e.g. ISO 27701 / 42001).
+
+	Quiz questions are delivered by the client incrementally; quizzes with no
+	questions yet are seeded as empty stubs (the course still publishes) and are
+	filled in place on a later re-run. Existing LMS Quiz/Question docs are never
+	deleted, so nothing is lost while questions are pending.
+	"""
+	courses = _load("courses_iso_auditor.json") or []
+	if not courses:
+		_log("iso-auditor: no course data found, skipping")
+		return
+
+	_copy_files(_load("files_iso_auditor.json") or [])
+
+	# reconcile structure: drop only the chapters/lessons of OUR courses that are
+	# no longer part of the new definition (keeps the old 2-chapter layout from
+	# lingering). Quizzes and questions are intentionally left untouched.
+	new_chapters, new_lessons = set(), set()
+	for c in courses:
+		for ch in c["chapters"]:
+			new_chapters.add(ch["chapter"]["name"])
+			for lesson in ch["lessons"]:
+				new_lessons.add(lesson["name"])
+	for c in courses:
+		slug = c["course"]["name"]
+		for ln in frappe.get_all("Course Lesson", filters={"course": slug}, pluck="name"):
+			if ln not in new_lessons:
+				frappe.delete_doc("Course Lesson", ln, force=True, ignore_permissions=True)
+		for cn in frappe.get_all("Course Chapter", filters={"course": slug}, pluck="name"):
+			if cn not in new_chapters:
+				frappe.delete_doc("Course Chapter", cn, force=True, ignore_permissions=True)
+
+	# questions before quizzes (quiz rows reference question names),
+	# quizzes before lessons (Course Lesson.on_update validates embedded quizzes).
+	for q in (_load("questions_iso_auditor.json") or []):
+		_upsert("LMS Question", q)
+	quizzes = _load("quizzes_iso_auditor.json") or []
+	for quiz in quizzes:
+		_upsert("LMS Quiz", quiz)
+
+	# lessons -> chapters -> course
+	for c in courses:
+		for ch in c["chapters"]:
+			for lesson in ch["lessons"]:
+				_upsert("Course Lesson", lesson)
+	for c in courses:
+		for ch in c["chapters"]:
+			_upsert("Course Chapter", ch["chapter"])
+	for c in courses:
+		_upsert("LMS Course", c["course"])
+
+	pending = [q["name"] for q in quizzes if not q.get("questions")]
+	_log(f"iso-auditor: {len(courses)} course(s) upserted")
+	if pending:
+		_log(f"iso-auditor: {len(pending)} quiz(zes) still awaiting client questions: {pending}")
+
+
 # ------------------------------------------------------------------------------ run
 def run(commit=True):
 	_log("seeding Quality Asia customizations …")
@@ -190,6 +257,20 @@ def run(commit=True):
 	seed_users()
 	seed_quizzes()  # before courses: lessons validate embedded quizzes exist
 	seed_courses()
+	if commit:
+		frappe.db.commit()
+	_log("done.")
+
+
+def run_iso_auditor_courses(commit=True):
+	"""Seed just the 10 ISO Internal Auditor courses. Invoked by the
+	`seed_iso_auditor_courses` patch, and runnable manually:
+
+	  bench --site <site> execute quality_asia_lms.setup.seed.run_iso_auditor_courses
+	"""
+	_log("seeding ISO Internal Auditor courses …")
+	seed_users()  # ensure the instructor User exists before linking courses
+	seed_iso_auditor_courses()
 	if commit:
 		frappe.db.commit()
 	_log("done.")

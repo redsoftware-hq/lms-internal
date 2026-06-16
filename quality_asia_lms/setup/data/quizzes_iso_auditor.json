@@ -1,0 +1,408 @@
+[
+  {
+    "name": "quiz-iso-9001",
+    "title": "ISO 9001:2015 Final Exam",
+    "max_attempts": 0,
+    "show_answers": 0,
+    "show_submission_history": 0,
+    "total_marks": 0,
+    "passing_percentage": 70,
+    "duration": null,
+    "shuffle_questions": 0,
+    "limit_questions_to": 0,
+    "enable_negative_marking": 0,
+    "marks_to_cut": 1,
+    "lesson": "qa-iso-9001-final-exam-lesson",
+    "course": "free-certified-internal-auditor-training-on-iso-9001-quality-management-system",
+    "doctype": "LMS Quiz",
+    "questions": []
+  },
+  {
+    "name": "quiz-iso-14001",
+    "title": "ISO 14001:2015 Final Exam",
+    "max_attempts": 0,
+    "show_answers": 0,
+    "show_submission_history": 0,
+    "total_marks": 0,
+    "passing_percentage": 70,
+    "duration": null,
+    "shuffle_questions": 0,
+    "limit_questions_to": 0,
+    "enable_negative_marking": 0,
+    "marks_to_cut": 1,
+    "lesson": "qa-iso-14001-final-exam-lesson",
+    "course": "free-certified-internal-auditor-training-on-iso-14001-environmental-management-system",
+    "doctype": "LMS Quiz",
+    "questions": []
+  },
+  {
+    "name": "quiz-iso-45001",
+    "title": "ISO 45001:2018 Final Exam",
+    "max_attempts": 0,
+    "show_answers": 0,
+    "show_submission_history": 0,
+    "total_marks": 0,
+    "passing_percentage": 70,
+    "duration": null,
+    "shuffle_questions": 0,
+    "limit_questions_to": 0,
+    "enable_negative_marking": 0,
+    "marks_to_cut": 1,
+    "lesson": "qa-iso-45001-final-exam-lesson",
+    "course": "free-certified-internal-auditor-training-on-iso-45001-occupational-health-and-safety-management-system",
+    "doctype": "LMS Quiz",
+    "questions": []
+  },
+  {
+    "name": "quiz-iso-27001",
+    "title": "ISO 27001:2022 Final Exam",
+    "max_attempts": 0,
+    "show_answers": 0,
+    "show_submission_history": 0,
+    "total_marks": 0,
+    "passing_percentage": 70,
+    "duration": null,
+    "shuffle_questions": 0,
+    "limit_questions_to": 0,
+    "enable_negative_marking": 0,
+    "marks_to_cut": 1,
+    "lesson": "qa-iso-27001-final-exam-lesson",
+    "course": "free-certified-internal-auditor-training-on-iso-27001-information-security-management-system",
+    "doctype": "LMS Quiz",
+    "questions": []
+  },
+  {
+    "name": "quiz-iso-13485",
+    "title": "ISO 13485:2016 Final Exam",
+    "max_attempts": 0,
+    "show_answers": 0,
+    "show_submission_history": 0,
+    "total_marks": 0,
+    "passing_percentage": 70,
+    "duration": null,
+    "shuffle_questions": 0,
+    "limit_questions_to": 0,
+    "enable_negative_marking": 0,
+    "marks_to_cut": 1,
+    "lesson": "qa-iso-13485-final-exam-lesson",
+    "course": "free-certified-internal-auditor-training-on-iso-13485-medical-devices-quality-management-system",
+    "doctype": "LMS Quiz",
+    "questions": []
+  },
+  {
+    "name": "quiz-iso-22000",
+    "title": "ISO 22000:2018 Final Exam",
+    "max_attempts": 0,
+    "show_answers": 0,
+    "show_submission_history": 0,
+    "total_marks": 0,
+    "passing_percentage": 70,
+    "duration": null,
+    "shuffle_questions": 0,
+    "limit_questions_to": 0,
+    "enable_negative_marking": 0,
+    "marks_to_cut": 1,
+    "lesson": "qa-iso-22000-final-exam-lesson",
+    "course": "free-certified-internal-auditor-training-on-iso-22000-food-safety-management-system",
+    "doctype": "LMS Quiz",
+    "questions": []
+  },
+  {
+    "name": "quiz-iso-50001",
+    "title": "ISO 50001:2018 Final Exam",
+    "max_attempts": 0,
+    "show_answers": 0,
+    "show_submission_history": 0,
+    "total_marks": 0,
+    "passing_percentage": 70,
+    "duration": null,
+    "shuffle_questions": 0,
+    "limit_questions_to": 0,
+    "enable_negative_marking": 0,
+    "marks_to_cut": 1,
+    "lesson": "qa-iso-50001-final-exam-lesson",
+    "course": "free-certified-internal-auditor-training-on-iso-50001-energy-management-system",
+    "doctype": "LMS Quiz",
+    "questions": []
+  },
+  {
+    "name": "quiz-iso-42001",
+    "title": "ISO 42001:2023 Final Exam",
+    "max_attempts": 0,
+    "show_answers": 0,
+    "show_submission_history": 0,
+    "total_marks": 0,
+    "passing_percentage": 70,
+    "duration": null,
+    "shuffle_questions": 0,
+    "limit_questions_to": 0,
+    "enable_negative_marking": 0,
+    "marks_to_cut": 1,
+    "lesson": "qa-iso-42001-final-exam-lesson",
+    "course": "free-certified-internal-auditor-training-on-iso-42001-aims",
+    "doctype": "LMS Quiz",
+    "questions": []
+  },
+  {
+    "name": "quiz-iso-27701",
+    "title": "ISO 27701:2019 Final Exam",
+    "max_attempts": 0,
+    "show_answers": 0,
+    "show_submission_history": 0,
+    "total_marks": 9,
+    "passing_percentage": 70,
+    "duration": null,
+    "shuffle_questions": 0,
+    "limit_questions_to": 0,
+    "enable_negative_marking": 0,
+    "marks_to_cut": 1,
+    "lesson": "qa-iso-27701-final-exam-lesson",
+    "course": "free-certified-internal-auditor-training-on-iso-27701-privacy-information-management-system",
+    "doctype": "LMS Quiz",
+    "questions": [
+      {
+        "idx": 1,
+        "question": "QTS-2026-00017",
+        "marks": 2,
+        "type": "Choices"
+      },
+      {
+        "idx": 2,
+        "question": "QTS-2026-00018",
+        "marks": 2,
+        "type": "Choices"
+      },
+      {
+        "idx": 3,
+        "question": "QTS-2026-00019",
+        "marks": 2,
+        "type": "Choices"
+      },
+      {
+        "idx": 4,
+        "question": "QTS-2026-00020",
+        "marks": 2,
+        "type": "Choices"
+      },
+      {
+        "idx": 5,
+        "question": "QTS-2026-00021",
+        "marks": 1,
+        "type": "Choices"
+      }
+    ]
+  },
+  {
+    "name": "quiz-iso-26000",
+    "title": "ISO 26000:2010 Final Exam",
+    "max_attempts": 0,
+    "show_answers": 0,
+    "show_submission_history": 0,
+    "total_marks": 40,
+    "passing_percentage": 70,
+    "duration": null,
+    "shuffle_questions": 0,
+    "limit_questions_to": 0,
+    "enable_negative_marking": 0,
+    "marks_to_cut": 1,
+    "lesson": "qa-iso-26000-final-exam-lesson",
+    "course": "free-certified-internal-auditor-training-on-iso-26000-social-responsibility",
+    "doctype": "LMS Quiz",
+    "questions": [
+      {
+        "idx": 1,
+        "question": "QA-ISO-26000-Q06",
+        "marks": 2,
+        "question_detail": "According to ISO 26000, what is the key difference between 'legal compliance' and 'social responsibility'?",
+        "type": "Choices"
+      },
+      {
+        "idx": 2,
+        "question": "QA-ISO-26000-Q07",
+        "marks": 2,
+        "question_detail": "Under ISO 26000, which of the following is NOT considered a core subject of social responsibility?",
+        "type": "Choices"
+      },
+      {
+        "idx": 3,
+        "question": "QA-ISO-26000-Q08",
+        "marks": 2,
+        "question_detail": "What does ISO 26000 recommend for organizations facing conflicts between national law and international norms of behavior?",
+        "type": "Choices"
+      },
+      {
+        "idx": 4,
+        "question": "QA-ISO-26000-Q09",
+        "marks": 2,
+        "question_detail": "Which of the following best describes ISO 26000's approach to consumer rights and sustainable consumption?",
+        "type": "Choices"
+      },
+      {
+        "idx": 5,
+        "question": "QA-ISO-26000-Q10",
+        "marks": 2,
+        "question_detail": "The principle of accountability in ISO 26000 means that organizations must take responsibility for the social, environmental, and economic i",
+        "type": "Choices"
+      },
+      {
+        "idx": 6,
+        "question": "QA-ISO-26000-Q11",
+        "marks": 2,
+        "question_detail": "One of the seven core subjects of ISO 26000 is 'Fair Operating Practices', which includes fighting corruption, promoting fair competition, a",
+        "type": "Choices"
+      },
+      {
+        "idx": 7,
+        "question": "QA-ISO-26000-Q12",
+        "marks": 2,
+        "question_detail": "How should an organization determine which social responsibility issues are relevant to its operations?",
+        "type": "Choices"
+      },
+      {
+        "idx": 8,
+        "question": "QA-ISO-26000-Q13",
+        "marks": 2,
+        "question_detail": "How does ISO 26000 define 'sphere of influence' in social responsibility?",
+        "type": "Choices"
+      },
+      {
+        "idx": 9,
+        "question": "QA-ISO-26000-Q14",
+        "marks": 2,
+        "question_detail": "What is the role of an internal auditor in evaluating social responsibility practices under ISO 26000?",
+        "type": "Choices"
+      },
+      {
+        "idx": 10,
+        "question": "QA-ISO-26000-Q15",
+        "marks": 2,
+        "question_detail": "During an audit, which of the following is the BEST method to verify the effectiveness of stakeholder engagement?",
+        "type": "Choices"
+      },
+      {
+        "idx": 11,
+        "question": "QA-ISO-26000-Q16",
+        "marks": 2,
+        "question_detail": "What should an auditor do if they find a major non-conformity during a social responsibility audit?",
+        "type": "Choices"
+      },
+      {
+        "idx": 12,
+        "question": "QA-ISO-26000-Q17",
+        "marks": 2,
+        "question_detail": "How should an auditor handle conflicting information from different sources during an audit?",
+        "type": "Choices"
+      },
+      {
+        "idx": 13,
+        "question": "QA-ISO-26000-Q18",
+        "marks": 2,
+        "question_detail": "What is the primary reason for conducting an opening meeting before starting an audit?",
+        "type": "Choices"
+      },
+      {
+        "idx": 14,
+        "question": "QA-ISO-26000-Q19",
+        "marks": 2,
+        "question_detail": "Which questioning technique is MOST effective during an audit interview?",
+        "type": "Choices"
+      },
+      {
+        "idx": 15,
+        "question": "QA-ISO-26000-Q20",
+        "marks": 2,
+        "question_detail": "How can an auditor ensure objectivity and impartiality during an audit?",
+        "type": "Choices"
+      },
+      {
+        "idx": 16,
+        "question": "QA-ISO-26000-Q21",
+        "marks": 2,
+        "question_detail": "When preparing an audit report, what is the MOST important factor to consider?",
+        "type": "Choices"
+      },
+      {
+        "idx": 17,
+        "question": "QA-ISO-26000-Q22",
+        "marks": 2,
+        "question_detail": "Case Study — Ethical Dilemma in Supply Chain Responsibility: XYZ Corporation, a multinational manufacturer committed to ISO 26000, prohibits",
+        "type": "Choices"
+      },
+      {
+        "idx": 18,
+        "question": "QA-ISO-26000-Q23",
+        "marks": 2,
+        "question_detail": "Case Study — Ethical Dilemma in Supply Chain Responsibility: XYZ Corporation, a multinational manufacturer committed to ISO 26000, prohibits",
+        "type": "Choices"
+      },
+      {
+        "idx": 19,
+        "question": "QA-ISO-26000-Q24",
+        "marks": 2,
+        "question_detail": "Case Study — Conflict of Interest in an Internal Audit: At ABC Tech Solutions, Lead Auditor Mr. Raj is evaluating ISO 26000 fair operating p",
+        "type": "Choices"
+      },
+      {
+        "idx": 20,
+        "question": "QA-ISO-26000-Q25",
+        "marks": 2,
+        "question_detail": "Case Study — Conflict of Interest in an Internal Audit: At ABC Tech Solutions, Lead Auditor Mr. Raj is evaluating ISO 26000 fair operating p",
+        "type": "Choices"
+      }
+    ]
+  },
+  {
+    "name": "quiz-iso-26000-feedback",
+    "title": "ISO 26000:2010 Training Feedback",
+    "max_attempts": 1,
+    "show_answers": 0,
+    "show_submission_history": 0,
+    "total_marks": 0,
+    "passing_percentage": 0,
+    "duration": null,
+    "shuffle_questions": 0,
+    "limit_questions_to": 0,
+    "enable_negative_marking": 0,
+    "marks_to_cut": 1,
+    "lesson": "qa-iso-26000-feedback-lesson",
+    "course": "free-certified-internal-auditor-training-on-iso-26000-social-responsibility",
+    "doctype": "LMS Quiz",
+    "questions": [
+      {
+        "idx": 1,
+        "question": "QA-FEEDBACK-EFFECTIVENESS",
+        "marks": 0,
+        "question_detail": "Overall, how would you rate the effectiveness of this Internal Auditor Training?",
+        "type": "Choices"
+      },
+      {
+        "idx": 2,
+        "question": "QA-FEEDBACK-INSTRUCTOR",
+        "marks": 0,
+        "question_detail": "How would you rate the instructor's knowledge and expertise?",
+        "type": "Choices"
+      },
+      {
+        "idx": 3,
+        "question": "QA-FEEDBACK-STRUCTURE",
+        "marks": 0,
+        "question_detail": "This course was delivered in a suitable amount of time.",
+        "type": "Choices"
+      },
+      {
+        "idx": 4,
+        "question": "QA-FEEDBACK-SATISFACTION",
+        "marks": 0,
+        "question_detail": "Overall satisfaction with the training.",
+        "type": "Choices"
+      },
+      {
+        "idx": 5,
+        "question": "QA-FEEDBACK-MATERIAL",
+        "marks": 0,
+        "question_detail": "How would you rate the comprehensiveness of the training material (topics, depth of content)?",
+        "type": "Choices"
+      }
+    ]
+  }
+]
