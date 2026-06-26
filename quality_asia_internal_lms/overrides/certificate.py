@@ -1,7 +1,7 @@
 """Quality Asia certificate customizations on top of stock LMS Certificate.
 
   - Every generated certificate is forced onto our print format ("QA Certificate")
-    and renders in the Quality Asia School format.
+    and renders in the Quality Asia certificate format.
   - Two training dates are auto-filled relative to the issue date and shown on the
     certificate as e.g. "07th, 08th APRIL 2026".
   - The "Congratulations on getting certified!" email carries the certificate PDF

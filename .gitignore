@@ -13,7 +13,6 @@ scripts/
 
 # Local dev bench (Docker Compose environment)
 dev-bench/
-20260610_134611-dwmportal_frappe_cloud-database.sql.gz
 CLAUDE.md
 MIGRATION_PLAN.md
 Makefile
