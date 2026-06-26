@@ -73,7 +73,7 @@ def qa_cert_image(filename):
 	the PDF engine (wkhtmltopdf) cannot reliably fetch them over the network during
 	rendering. Reading the file at print time keeps the images as real, swappable
 	files in the repo."""
-	path = frappe.get_app_path("quality_asia_lms", "public", "images", "qa-cert", filename)
+	path = frappe.get_app_path("quality_asia_internal_lms", "public", "images", "qa-cert", filename)
 	try:
 		with open(path, "rb") as f:
 			data = base64.b64encode(f.read()).decode()

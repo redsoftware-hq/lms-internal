@@ -1,9 +1,9 @@
 [project]
-name = "quality_asia_lms"
+name = "quality_asia_internal_lms"
 authors = [
     { name = "Red Software", email = "kirtan.tank@redsoftware.in"}
 ]
-description = "Custom Frappe app for Quality Asia LMS"
+description = "Custom Frappe app for Quality Asia Internal LMS"
 requires-python = ">=3.10"
 readme = "README.md"
 dynamic = ["version"]

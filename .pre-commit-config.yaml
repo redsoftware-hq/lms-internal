@@ -8,7 +8,7 @@ repos:
     rev: v5.0.0
     hooks:
       - id: trailing-whitespace
-        files: "quality_asia_lms.*"
+        files: "quality_asia_internal_lms.*"
         exclude: ".*json$|.*txt$|.*csv|.*md|.*svg"
       - id: check-merge-conflict
       - id: check-ast
@@ -38,11 +38,11 @@ repos:
         # Ignore any files that might contain jinja / bundles
         exclude: |
             (?x)^(
-                quality_asia_lms/public/dist/.*|
+                quality_asia_internal_lms/public/dist/.*|
                 .*node_modules.*|
                 .*boilerplate.*|
-                quality_asia_lms/templates/includes/.*|
-                quality_asia_lms/public/js/lib/.*
+                quality_asia_internal_lms/templates/includes/.*|
+                quality_asia_internal_lms/public/js/lib/.*
             )$
 
 
@@ -55,12 +55,12 @@ repos:
         # Ignore any files that might contain jinja / bundles
         exclude: |
             (?x)^(
-                quality_asia_lms/public/dist/.*|
+                quality_asia_internal_lms/public/dist/.*|
                 cypress/.*|
                 .*node_modules.*|
                 .*boilerplate.*|
-                quality_asia_lms/templates/includes/.*|
-                quality_asia_lms/public/js/lib/.*
+                quality_asia_internal_lms/templates/includes/.*|
+                quality_asia_internal_lms/public/js/lib/.*
             )$
 
 ci:

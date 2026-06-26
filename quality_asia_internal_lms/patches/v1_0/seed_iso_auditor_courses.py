@@ -9,19 +9,19 @@ Quizzes are seeded as empty stubs where the client has not yet supplied
 questions; a later re-run fills them in place (idempotent). Runs once via the
 Patch Log, so later admin edits in the UI are preserved.
 
-Logic lives in quality_asia_lms.setup.seed.run_iso_auditor_courses (also
+Logic lives in quality_asia_internal_lms.setup.seed.run_iso_auditor_courses (also
 runnable manually via `bench --site <site> execute
-quality_asia_lms.setup.seed.run_iso_auditor_courses`).
+quality_asia_internal_lms.setup.seed.run_iso_auditor_courses`).
 """
 
 import frappe
 
-from quality_asia_lms.setup import seed
+from quality_asia_internal_lms.setup import seed
 
 
 def execute():
 	try:
 		seed.run_iso_auditor_courses(commit=False)  # migrate wraps this in its own transaction
 	except Exception:
-		frappe.log_error(title="quality_asia_lms seed_iso_auditor_courses failed")
+		frappe.log_error(title="quality_asia_internal_lms seed_iso_auditor_courses failed")
 		raise

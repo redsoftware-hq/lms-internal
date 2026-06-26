@@ -6,11 +6,11 @@ Carries what NO installed app recreates on its own:
   - Content    (the 2 published ISO courses + chapters + lessons + instructor Users)
   - Files      (logo/favicon/footer + lesson images)
 
-Invoked once by the patch `quality_asia_lms.patches.v1_0.seed_initial_data`
+Invoked once by the patch `quality_asia_internal_lms.patches.v1_0.seed_initial_data`
 (recorded in Patch Log -> never re-runs -> later admin UI edits persist).
 
 Manual re-run / second environment:
-  bench --site <site> execute quality_asia_lms.setup.seed.run
+  bench --site <site> execute quality_asia_internal_lms.setup.seed.run
 
 Every step is idempotent, so the manual re-run is safe too.
 """
@@ -22,8 +22,8 @@ from urllib.parse import unquote
 
 import frappe
 
-DATA = frappe.get_app_path("quality_asia_lms", "setup", "data")
-FILES = frappe.get_app_path("quality_asia_lms", "setup", "files")
+DATA = frappe.get_app_path("quality_asia_internal_lms", "setup", "data")
+FILES = frappe.get_app_path("quality_asia_internal_lms", "setup", "files")
 
 
 def _load(name):
@@ -266,7 +266,7 @@ def run_iso_auditor_courses(commit=True):
 	"""Seed just the 10 ISO Internal Auditor courses. Invoked by the
 	`seed_iso_auditor_courses` patch, and runnable manually:
 
-	  bench --site <site> execute quality_asia_lms.setup.seed.run_iso_auditor_courses
+	  bench --site <site> execute quality_asia_internal_lms.setup.seed.run_iso_auditor_courses
 	"""
 	_log("seeding ISO Internal Auditor courses …")
 	seed_users()  # ensure the instructor User exists before linking courses

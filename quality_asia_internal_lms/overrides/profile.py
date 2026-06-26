@@ -10,7 +10,7 @@ profile.
 import frappe
 from frappe import _
 
-from quality_asia_lms.overrides.signup import _validate_mobile
+from quality_asia_internal_lms.overrides.signup import _validate_mobile
 
 EXTRA_FIELDS = ("mobile_no", "address", "resume")
 

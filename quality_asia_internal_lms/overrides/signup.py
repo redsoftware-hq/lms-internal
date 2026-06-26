@@ -39,7 +39,7 @@ MAX_RESUME_BYTES = 5 * 1024 * 1024  # 5 MB
 
 def get_signup_template():
 	"""`signup_form_template` hook → our signup form."""
-	return "quality_asia_lms/templates/signup-form.html"
+	return "quality_asia_internal_lms/templates/signup-form.html"
 
 
 def _validate_mobile(mobile_no):

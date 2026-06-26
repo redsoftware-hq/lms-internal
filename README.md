@@ -1,6 +1,6 @@
-### Quality Asia LMS
+### Quality Asia Internal LMS
 
-Custom Frappe app for Quality Asia LMS
+Custom Frappe app for Quality Asia Internal LMS
 
 ### Installation
 
@@ -9,7 +9,7 @@ You can install this app using the [bench](https://github.com/frappe/bench) CLI:
 ```bash
 cd $PATH_TO_YOUR_BENCH
 bench get-app $URL_OF_THIS_REPO --branch develop
-bench install-app quality_asia_lms
+bench install-app quality_asia_internal_lms
 ```
 
 ### Contributing
@@ -17,7 +17,7 @@ bench install-app quality_asia_lms
 This app uses `pre-commit` for code formatting and linting. Please [install pre-commit](https://pre-commit.com/#installation) and enable it for this repository:
 
 ```bash
-cd apps/quality_asia_lms
+cd apps/quality_asia_internal_lms
 pre-commit install
 ```
 

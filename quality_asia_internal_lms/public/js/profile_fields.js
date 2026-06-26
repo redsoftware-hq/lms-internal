@@ -3,7 +3,7 @@
  * LMS portal's native "Edit Profile" modal, WITHOUT forking the LMS frontend.
  *
  * The LMS SPA ships read-only on Frappe Cloud, so this script is injected into
- * the SPA shell at serve time (see quality_asia_lms/brand.py). It augments the
+ * the SPA shell at serve time (see quality_asia_internal_lms/brand.py). It augments the
  * stock frappe-ui Dialog at runtime.
  *
  * Defensive by design: every step is guarded. If the LMS modal markup changes,
@@ -15,7 +15,7 @@
 	if (window.__qaProfileExtras) return;
 	window.__qaProfileExtras = true;
 
-	var BACKEND = "quality_asia_lms.overrides.profile";
+	var BACKEND = "quality_asia_internal_lms.overrides.profile";
 	var ALLOWED_RESUME = /\.(pdf|docx?|PDF|DOCX?)$/;
 	var MAX_RESUME_MB = 5;
 
