@@ -58,15 +58,22 @@ def _copy_files(manifest):
 				shutil.copy(src, dest)
 				copied += 1
 		# File record is secondary (Files UI / attachment tracking) — best-effort,
-		# never abort the deploy over it.
+		# never abort the deploy over it. The File doctype re-saves the on-disk file
+		# on insert and can rewrite file_url with a content-hash suffix
+		# (e.g. "logo.png" -> "logo<hash>.png"); branding reads (lms.lms.api.get_branding
+		# -> get_file_info) look the File up by its EXACT url, so we pin it back to the
+		# clean url the manifest/Website Settings reference, or the logo resolves to null.
 		if not frappe.db.exists("File", {"file_url": url}):
 			try:
-				frappe.get_doc({
+				doc = frappe.get_doc({
 					"doctype": "File",
 					"file_url": url,
 					"file_name": f.get("file_name"),
 					"is_private": f.get("is_private") or 0,
 				}).insert(ignore_permissions=True)
+				if doc.file_url != url:
+					frappe.db.set_value("File", doc.name,
+						{"file_url": url, "file_name": f.get("file_name")})
 				created += 1
 			except Exception:
 				frappe.log_error(title=f"qa-seed: File record skipped for {url}")
