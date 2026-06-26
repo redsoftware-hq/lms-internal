@@ -151,7 +151,6 @@ after_migrate = [
 # }
 
 override_doctype_class = {
-	"Razorpay Settings": "quality_asia_internal_lms.overrides.razorpay_settings.RazorpaySettings",
 	# Attach the certificate PDF to the certification email (in-memory, no File stored).
 	"LMS Certificate": "quality_asia_internal_lms.overrides.certificate.QALMSCertificate",
 }
@@ -200,11 +199,7 @@ doc_events = {
 # override_whitelisted_methods = {
 # 	"frappe.desk.doctype.event.event.get_events": "quality_asia_internal_lms.event.get_events"
 # }
-override_whitelisted_methods = {
-	# Force India server-side so the browser-supplied country cannot skip 18% GST.
-	"lms.lms.payments.get_payment_link": "quality_asia_internal_lms.overrides.payments.get_payment_link",
-	"lms.lms.utils.get_order_summary": "quality_asia_internal_lms.overrides.payments.get_order_summary",
-}
+# No payment overrides — the internal LMS is free (no Razorpay / GST).
 #
 # each overriding function accepts a `data` argument;
 # generated from the base implementation of the doctype dashboard,
