@@ -82,10 +82,9 @@ jinja = {
 	],
 }
 
-# Custom self-signup form (Name, Email, mandatory Mobile, optional Address) on
-# Frappe's /login#signup page. Wins over the stock/LMS form because this app
-# loads last (login.py uses signup_form_template[-1]).
-signup_form_template = "quality_asia_internal_lms.overrides.signup.get_signup_template"
+# Invite-only product: no public self-signup form. Sign-up is disabled via
+# LMS Settings (disable_signup=1, seeded in branding.json) and employees are
+# registered from the back end (see quality_asia_internal_lms.setup.invite).
 
 # Installation
 # ------------
