@@ -1,10 +1,13 @@
 """One-time seed of Quality Asia customizations onto a fresh deployment.
 
 Carries what NO installed app recreates on its own:
+  - Files      (logo / favicon / footer)
   - Branding   (Website Settings + LMS Settings runtime values)  -> force-set
   - RBAC       (admin's manual Custom DocPerm changes + Property Setters)
-  - Content    (the 2 published ISO courses + chapters + lessons + instructor Users)
-  - Files      (logo/favicon/footer + lesson images)
+  - Users      (one admin/instructor account)
+
+The internal LMS ships with NO course catalog — staff training content is
+authored in-app — so there is no course / quiz / question seeding here.
 
 Invoked once by the patch `quality_asia_internal_lms.patches.v1_0.seed_initial_data`
 (recorded in Patch Log -> never re-runs -> later admin UI edits persist).
@@ -139,115 +142,6 @@ def seed_users():
 	_log(f"users: {len(users)} instructor user(s) ensured")
 
 
-# -------------------------------------------------------------------------- courses
-def _upsert(dt, data):
-	data = dict(data)
-	data.pop("doctype", None)
-	name = data.get("name")
-	if name and frappe.db.exists(dt, name):
-		doc = frappe.get_doc(dt, name)
-		doc.update(data)
-		doc.flags.ignore_permissions = True
-		doc.flags.ignore_links = True
-		doc.flags.ignore_mandatory = True
-		doc.save()
-	else:
-		doc = frappe.get_doc({**data, "doctype": dt})
-		doc.flags.ignore_permissions = True
-		doc.flags.ignore_links = True
-		doc.flags.ignore_mandatory = True
-		doc.insert(set_name=name)
-	return doc
-
-
-def seed_quizzes():
-	"""Questions then quizzes — MUST run before lessons, because
-	Course Lesson.on_update validates that embedded quizzes already exist."""
-	questions = _load("questions.json") or []
-	quizzes = _load("quizzes.json") or []
-	for q in questions:
-		_upsert("LMS Question", q)
-	for quiz in quizzes:
-		_upsert("LMS Quiz", quiz)
-	_log(f"quizzes: {len(questions)} question(s), {len(quizzes)} quiz(zes) upserted")
-
-
-def seed_courses():
-	data = _load("courses.json") or []
-	# dependency order: lessons -> chapters -> course (links resolve, ignore_links covers cycles)
-	for c in data:
-		for ch in c["chapters"]:
-			for lesson in ch["lessons"]:
-				_upsert("Course Lesson", lesson)
-	for c in data:
-		for ch in c["chapters"]:
-			_upsert("Course Chapter", ch["chapter"])
-	for c in data:
-		_upsert("LMS Course", c["course"])
-	_log(f"courses: {len(data)} course(s) upserted (update-to-match snapshot)")
-
-
-# ----------------------------------------------------------- ISO auditor courses
-def seed_iso_auditor_courses():
-	"""The 10 free/paid ISO Internal Auditor courses generated from the client's
-	content sheet. Owns these course slugs end-to-end and overrides whatever the
-	earlier seed_courses() produced for the same slugs (e.g. ISO 27701 / 42001).
-
-	Quiz questions are delivered by the client incrementally; quizzes with no
-	questions yet are seeded as empty stubs (the course still publishes) and are
-	filled in place on a later re-run. Existing LMS Quiz/Question docs are never
-	deleted, so nothing is lost while questions are pending.
-	"""
-	courses = _load("courses_iso_auditor.json") or []
-	if not courses:
-		_log("iso-auditor: no course data found, skipping")
-		return
-
-	_copy_files(_load("files_iso_auditor.json") or [])
-
-	# reconcile structure: drop only the chapters/lessons of OUR courses that are
-	# no longer part of the new definition (keeps the old 2-chapter layout from
-	# lingering). Quizzes and questions are intentionally left untouched.
-	new_chapters, new_lessons = set(), set()
-	for c in courses:
-		for ch in c["chapters"]:
-			new_chapters.add(ch["chapter"]["name"])
-			for lesson in ch["lessons"]:
-				new_lessons.add(lesson["name"])
-	for c in courses:
-		slug = c["course"]["name"]
-		for ln in frappe.get_all("Course Lesson", filters={"course": slug}, pluck="name"):
-			if ln not in new_lessons:
-				frappe.delete_doc("Course Lesson", ln, force=True, ignore_permissions=True)
-		for cn in frappe.get_all("Course Chapter", filters={"course": slug}, pluck="name"):
-			if cn not in new_chapters:
-				frappe.delete_doc("Course Chapter", cn, force=True, ignore_permissions=True)
-
-	# questions before quizzes (quiz rows reference question names),
-	# quizzes before lessons (Course Lesson.on_update validates embedded quizzes).
-	for q in (_load("questions_iso_auditor.json") or []):
-		_upsert("LMS Question", q)
-	quizzes = _load("quizzes_iso_auditor.json") or []
-	for quiz in quizzes:
-		_upsert("LMS Quiz", quiz)
-
-	# lessons -> chapters -> course
-	for c in courses:
-		for ch in c["chapters"]:
-			for lesson in ch["lessons"]:
-				_upsert("Course Lesson", lesson)
-	for c in courses:
-		for ch in c["chapters"]:
-			_upsert("Course Chapter", ch["chapter"])
-	for c in courses:
-		_upsert("LMS Course", c["course"])
-
-	pending = [q["name"] for q in quizzes if not q.get("questions")]
-	_log(f"iso-auditor: {len(courses)} course(s) upserted")
-	if pending:
-		_log(f"iso-auditor: {len(pending)} quiz(zes) still awaiting client questions: {pending}")
-
-
 # ------------------------------------------------------------------------------ run
 def run(commit=True):
 	_log("seeding Quality Asia customizations …")
@@ -255,22 +149,6 @@ def run(commit=True):
 	seed_branding()
 	seed_rbac()
 	seed_users()
-	seed_quizzes()  # before courses: lessons validate embedded quizzes exist
-	seed_courses()
-	if commit:
-		frappe.db.commit()
-	_log("done.")
-
-
-def run_iso_auditor_courses(commit=True):
-	"""Seed just the 10 ISO Internal Auditor courses. Invoked by the
-	`seed_iso_auditor_courses` patch, and runnable manually:
-
-	  bench --site <site> execute quality_asia_internal_lms.setup.seed.run_iso_auditor_courses
-	"""
-	_log("seeding ISO Internal Auditor courses …")
-	seed_users()  # ensure the instructor User exists before linking courses
-	seed_iso_auditor_courses()
 	if commit:
 		frappe.db.commit()
 	_log("done.")

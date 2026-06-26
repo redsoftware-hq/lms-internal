@@ -1,7 +1,7 @@
-"""One-time seed of Quality Asia branding/RBAC/courses onto a fresh deployment.
+"""One-time seed of Quality Asia branding / RBAC / files / users onto a fresh deployment.
 
 Runs exactly once: Frappe records it in `Patch Log` after success and never runs
-it again. So later admin edits (logo, permissions, course content) made through the
+it again. So later admin edits (logo, permissions, accounts) made through the
 UI are NOT overwritten by subsequent `bench migrate` runs.
 
 The actual logic lives in quality_asia_internal_lms.setup.seed (also runnable manually via
