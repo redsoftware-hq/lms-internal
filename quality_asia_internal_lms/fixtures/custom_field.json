@@ -39,35 +39,5 @@
   "fieldtype": "Data",
   "insert_after": "member_name",
   "read_only": 1
- },
- {
-  "doctype": "Custom Field",
-  "name": "User-company_name",
-  "dt": "User",
-  "module": "Quality Asia Internal LMS",
-  "fieldname": "company_name",
-  "label": "Company Name",
-  "fieldtype": "Data",
-  "insert_after": "mobile_no"
- },
- {
-  "doctype": "Custom Field",
-  "name": "User-address",
-  "dt": "User",
-  "module": "Quality Asia Internal LMS",
-  "fieldname": "address",
-  "label": "Residential Address",
-  "fieldtype": "Small Text",
-  "insert_after": "company_name"
- },
- {
-  "doctype": "Custom Field",
-  "name": "User-resume",
-  "dt": "User",
-  "module": "Quality Asia Internal LMS",
-  "fieldname": "resume",
-  "label": "Resume",
-  "fieldtype": "Attach",
-  "insert_after": "address"
  }
 ]

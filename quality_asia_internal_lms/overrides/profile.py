@@ -1,18 +1,32 @@
-"""Backend for the extra profile fields (mobile, address, resume) that we add to
-the LMS portal's Edit Profile modal via injected JS (QA-15).
+"""Backend for the extra profile field (mobile number) that we add to the LMS
+portal's Edit Profile modal via injected JS (QA-15).
 
-These run server-side in our app, so they're robust and deploy cleanly on Frappe
-Cloud; only the modal UI that calls them is injected into the SPA. Each method is
+This runs server-side in our app, so it's robust and deploys cleanly on Frappe
+Cloud; only the modal UI that calls it is injected into the SPA. Each method is
 scoped to the *logged-in* user — a website user can only read/write their own
 profile.
+
+The internal LMS does not collect job-applicant data (company / residential
+address / resume), so only the native ``mobile_no`` field is exposed here.
 """
+
+import re
 
 import frappe
 from frappe import _
 
-from quality_asia_internal_lms.overrides.signup import _validate_mobile
+EXTRA_FIELDS = ("mobile_no",)
 
-EXTRA_FIELDS = ("mobile_no", "address", "resume")
+# Lenient mobile rule (7–15 digits; +, spaces and hyphens are allowed and ignored).
+_MOBILE_RE = re.compile(r"\D")
+
+
+def _validate_mobile(value):
+	if not value:
+		return
+	digits = _MOBILE_RE.sub("", value)
+	if not (7 <= len(digits) <= 15):
+		frappe.throw(_("Please enter a valid mobile number."))
 
 
 def _require_user():
@@ -30,12 +44,12 @@ def get_profile_extras():
 
 
 @frappe.whitelist()
-def update_profile_extras(mobile_no=None, address=None, resume=None):
-	"""Save the QA-specific profile fields for the logged-in user.
+def update_profile_extras(mobile_no=None):
+	"""Save the profile fields for the logged-in user.
 
 	Only the fields passed (non-None) are touched, so the injected UI can save
 	independently of the stock modal's own save. Mobile, when provided, is
-	validated with the same lenient rule as signup.
+	validated with a lenient rule.
 	"""
 	user = _require_user()
 	values = {}
@@ -44,11 +58,6 @@ def update_profile_extras(mobile_no=None, address=None, resume=None):
 		mobile_no = mobile_no.strip()
 		_validate_mobile(mobile_no)
 		values["mobile_no"] = mobile_no
-	if address is not None:
-		values["address"] = address.strip()
-	if resume is not None:
-		# resume is the file_url returned by the upload; "" clears it.
-		values["resume"] = resume.strip()
 
 	if values:
 		frappe.db.set_value("User", user, values)
