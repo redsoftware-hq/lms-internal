@@ -99,7 +99,6 @@ after_install = "quality_asia_internal_lms.brand.inject_brand_css"
 after_migrate = [
 	"quality_asia_internal_lms.brand.inject_brand_css",
 	"quality_asia_internal_lms.overrides.certificate.enforce_qa_certificate_template",
-	"quality_asia_internal_lms.overrides.dwm_migration.migrate_if_dump_present",
 ]
 
 # Uninstallation
