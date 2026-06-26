@@ -3,13 +3,13 @@ import re
 
 import frappe
 
-BRAND_CSS_HREF = "/assets/quality_asia_internal_lms/css/brand.css"
+BRAND_CSS_HREF = "/assets/lms_internal/css/brand.css"
 # Runtime enhancement of the LMS SPA that can't be done via config/fixtures
 # (e.g. adding Mobile/Address/Resume + Change Password to the native Edit Profile
 # modal — QA-15). Injected the same serve-time way as the brand skin.
-PROFILE_JS_HREF = "/assets/quality_asia_internal_lms/js/profile_fields.js"
+PROFILE_JS_HREF = "/assets/lms_internal/js/profile_fields.js"
 BRAND_LINK_TAG = (
-	"\t\t<!-- Quality Asia brand skin + portal enhancements (injected by quality_asia_internal_lms.brand) -->\n"
+	"\t\t<!-- Quality Asia brand skin + portal enhancements (injected by lms_internal.brand) -->\n"
 	f'\t\t<link rel="stylesheet" href="{BRAND_CSS_HREF}">\n'
 	f'\t\t<script defer src="{PROFILE_JS_HREF}"></script>\n'
 )
@@ -63,7 +63,7 @@ def inject_brand_css_into_response(response=None, request=None, **kwargs):
 			response.set_data(new_html)
 	except Exception:
 		# Branding must never break a page render — fail open.
-		frappe.logger("quality_asia_internal_lms").debug("brand css response injection skipped", exc_info=True)
+		frappe.logger("lms_internal").debug("brand css response injection skipped", exc_info=True)
 
 
 def inject_brand_css():
@@ -83,7 +83,7 @@ def inject_brand_css():
 
 	if not os.path.exists(path):
 		print(
-			f"[quality_asia_internal_lms] {path} not found (frontend not built yet); "
+			f"[lms_internal] {path} not found (frontend not built yet); "
 			"skipping brand CSS injection"
 		)
 		return
@@ -101,8 +101,8 @@ def inject_brand_css():
 	except OSError as e:
 		# Read-only filesystem (e.g. Frappe Cloud) — the request-time injector
 		# handles skinning there. Never let this abort a migrate.
-		print(f"[quality_asia_internal_lms] could not write brand link to {path} ({e}); "
+		print(f"[lms_internal] could not write brand link to {path} ({e}); "
 			"request-time injector will handle it")
 		return
 
-	print(f"[quality_asia_internal_lms] injected brand CSS link into {path}")
+	print(f"[lms_internal] injected brand CSS link into {path}")

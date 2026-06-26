@@ -6,11 +6,11 @@ role and Frappe's standard welcome email — a "set your password" link — so w
 never set or handle a password ourselves.
 
 Usage (a few employees inline):
-  bench --site <site> execute quality_asia_internal_lms.setup.invite.invite_employees \
+  bench --site <site> execute lms_internal.setup.invite.invite_employees \
     --kwargs "{'rows': [{'email': 'asha@client.com', 'full_name': 'Asha Rao'}]}"
 
 Usage (from a CSV with header `email,full_name`):
-  bench --site <site> execute quality_asia_internal_lms.setup.invite.invite_employees \
+  bench --site <site> execute lms_internal.setup.invite.invite_employees \
     --kwargs "{'csv_path': '/path/to/employees.csv'}"
 
 Idempotent: an existing user is left in place (only the LMS Student role is

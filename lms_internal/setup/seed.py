@@ -9,11 +9,11 @@ Carries what NO installed app recreates on its own:
 The internal LMS ships with NO course catalog — staff training content is
 authored in-app — so there is no course / quiz / question seeding here.
 
-Invoked once by the patch `quality_asia_internal_lms.patches.v1_0.seed_initial_data`
+Invoked once by the patch `lms_internal.patches.v1_0.seed_initial_data`
 (recorded in Patch Log -> never re-runs -> later admin UI edits persist).
 
 Manual re-run / second environment:
-  bench --site <site> execute quality_asia_internal_lms.setup.seed.run
+  bench --site <site> execute lms_internal.setup.seed.run
 
 Every step is idempotent, so the manual re-run is safe too.
 """
@@ -25,8 +25,8 @@ from urllib.parse import unquote
 
 import frappe
 
-DATA = frappe.get_app_path("quality_asia_internal_lms", "setup", "data")
-FILES = frappe.get_app_path("quality_asia_internal_lms", "setup", "files")
+DATA = frappe.get_app_path("lms_internal", "setup", "data")
+FILES = frappe.get_app_path("lms_internal", "setup", "files")
 
 
 def _load(name):

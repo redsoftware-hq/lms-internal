@@ -2,7 +2,7 @@
  {
   "doctype": "Print Format",
   "name": "QA Certificate",
-  "module": "Quality Asia Internal LMS",
+  "module": "LMS Internal",
   "doc_type": "LMS Certificate",
   "print_format_type": "Jinja",
   "custom_format": 1,

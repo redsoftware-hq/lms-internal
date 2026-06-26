@@ -1,4 +1,4 @@
-app_name = "quality_asia_internal_lms"
+app_name = "lms_internal"
 app_title = "Quality Asia Internal LMS"
 app_publisher = "Red Software"
 app_description = "Custom Frappe app for Quality Asia Internal LMS"
@@ -13,11 +13,11 @@ app_license = "mit"
 # Each item in the list will be shown as an app in the apps page
 # add_to_apps_screen = [
 # 	{
-# 		"name": "quality_asia_internal_lms",
-# 		"logo": "/assets/quality_asia_internal_lms/logo.png",
+# 		"name": "lms_internal",
+# 		"logo": "/assets/lms_internal/logo.png",
 # 		"title": "Quality Asia Internal LMS",
-# 		"route": "/quality_asia_internal_lms",
-# 		"has_permission": "quality_asia_internal_lms.api.permission.has_app_permission"
+# 		"route": "/lms_internal",
+# 		"has_permission": "lms_internal.api.permission.has_app_permission"
 # 	}
 # ]
 
@@ -25,15 +25,15 @@ app_license = "mit"
 # ------------------
 
 # include js, css files in header of desk.html
-# app_include_css = "/assets/quality_asia_internal_lms/css/quality_asia_internal_lms.css"
-# app_include_js = "/assets/quality_asia_internal_lms/js/quality_asia_internal_lms.js"
+# app_include_css = "/assets/lms_internal/css/lms_internal.css"
+# app_include_js = "/assets/lms_internal/js/lms_internal.js"
 
 # include js, css files in header of web template
-# web_include_css = "/assets/quality_asia_internal_lms/css/quality_asia_internal_lms.css"
-# web_include_js = "/assets/quality_asia_internal_lms/js/quality_asia_internal_lms.js"
+# web_include_css = "/assets/lms_internal/css/lms_internal.css"
+# web_include_js = "/assets/lms_internal/js/lms_internal.js"
 
 # include custom scss in every website theme (without file extension ".scss")
-# website_theme_scss = "quality_asia_internal_lms/public/scss/website"
+# website_theme_scss = "lms_internal/public/scss/website"
 
 # include js, css files in header of web form
 # webform_include_js = {"doctype": "public/js/doctype.js"}
@@ -51,7 +51,7 @@ app_license = "mit"
 # Svg Icons
 # ------------------
 # include app icons in desk
-# app_include_icons = "quality_asia_internal_lms/public/icons.svg"
+# app_include_icons = "lms_internal/public/icons.svg"
 
 # Home Pages
 # ----------
@@ -77,57 +77,57 @@ app_license = "mit"
 # Exposes format_training_dates() to the QA Certificate print format.
 jinja = {
 	"methods": [
-		"quality_asia_internal_lms.overrides.certificate.format_training_dates",
-		"quality_asia_internal_lms.overrides.certificate.qa_cert_image",
+		"lms_internal.overrides.certificate.format_training_dates",
+		"lms_internal.overrides.certificate.qa_cert_image",
 	],
 }
 
 # Invite-only product: no public self-signup form. Sign-up is disabled via
 # LMS Settings (disable_signup=1, seeded in branding.json) and employees are
-# registered from the back end (see quality_asia_internal_lms.setup.invite).
+# registered from the back end (see lms_internal.setup.invite).
 
 # Installation
 # ------------
 
-# before_install = "quality_asia_internal_lms.install.before_install"
-after_install = "quality_asia_internal_lms.brand.inject_brand_css"
+# before_install = "lms_internal.install.before_install"
+after_install = "lms_internal.brand.inject_brand_css"
 
 # Re-inject the brand skin <link> into the (build-generated) LMS SPA shell.
 # bench update runs build -> migrate, so after_migrate self-heals the link.
 # Also re-point existing certificates onto the QA print format (runs after the
 # fixtures that create that print format are synced).
 after_migrate = [
-	"quality_asia_internal_lms.brand.inject_brand_css",
-	"quality_asia_internal_lms.overrides.certificate.enforce_qa_certificate_template",
+	"lms_internal.brand.inject_brand_css",
+	"lms_internal.overrides.certificate.enforce_qa_certificate_template",
 ]
 
 # Uninstallation
 # ------------
 
-# before_uninstall = "quality_asia_internal_lms.uninstall.before_uninstall"
-# after_uninstall = "quality_asia_internal_lms.uninstall.after_uninstall"
+# before_uninstall = "lms_internal.uninstall.before_uninstall"
+# after_uninstall = "lms_internal.uninstall.after_uninstall"
 
 # Integration Setup
 # ------------------
 # To set up dependencies/integrations with other apps
 # Name of the app being installed is passed as an argument
 
-# before_app_install = "quality_asia_internal_lms.utils.before_app_install"
-# after_app_install = "quality_asia_internal_lms.utils.after_app_install"
+# before_app_install = "lms_internal.utils.before_app_install"
+# after_app_install = "lms_internal.utils.after_app_install"
 
 # Integration Cleanup
 # -------------------
 # To clean up dependencies/integrations with other apps
 # Name of the app being uninstalled is passed as an argument
 
-# before_app_uninstall = "quality_asia_internal_lms.utils.before_app_uninstall"
-# after_app_uninstall = "quality_asia_internal_lms.utils.after_app_uninstall"
+# before_app_uninstall = "lms_internal.utils.before_app_uninstall"
+# after_app_uninstall = "lms_internal.utils.after_app_uninstall"
 
 # Desk Notifications
 # ------------------
 # See frappe.core.notifications.get_notification_config
 
-# notification_config = "quality_asia_internal_lms.notifications.get_notification_config"
+# notification_config = "lms_internal.notifications.get_notification_config"
 
 # Permissions
 # -----------
@@ -151,7 +151,7 @@ after_migrate = [
 
 override_doctype_class = {
 	# Attach the certificate PDF to the certification email (in-memory, no File stored).
-	"LMS Certificate": "quality_asia_internal_lms.overrides.certificate.QALMSCertificate",
+	"LMS Certificate": "lms_internal.overrides.certificate.QALMSCertificate",
 }
 
 # Document Events
@@ -162,7 +162,7 @@ override_doctype_class = {
 # two training dates from the issue date.
 doc_events = {
 	"LMS Certificate": {
-		"before_insert": "quality_asia_internal_lms.overrides.certificate.prepare_certificate",
+		"before_insert": "lms_internal.overrides.certificate.prepare_certificate",
 	},
 }
 
@@ -171,32 +171,32 @@ doc_events = {
 
 # scheduler_events = {
 # 	"all": [
-# 		"quality_asia_internal_lms.tasks.all"
+# 		"lms_internal.tasks.all"
 # 	],
 # 	"daily": [
-# 		"quality_asia_internal_lms.tasks.daily"
+# 		"lms_internal.tasks.daily"
 # 	],
 # 	"hourly": [
-# 		"quality_asia_internal_lms.tasks.hourly"
+# 		"lms_internal.tasks.hourly"
 # 	],
 # 	"weekly": [
-# 		"quality_asia_internal_lms.tasks.weekly"
+# 		"lms_internal.tasks.weekly"
 # 	],
 # 	"monthly": [
-# 		"quality_asia_internal_lms.tasks.monthly"
+# 		"lms_internal.tasks.monthly"
 # 	],
 # }
 
 # Testing
 # -------
 
-# before_tests = "quality_asia_internal_lms.install.before_tests"
+# before_tests = "lms_internal.install.before_tests"
 
 # Overriding Methods
 # ------------------------------
 #
 # override_whitelisted_methods = {
-# 	"frappe.desk.doctype.event.event.get_events": "quality_asia_internal_lms.event.get_events"
+# 	"frappe.desk.doctype.event.event.get_events": "lms_internal.event.get_events"
 # }
 # No payment overrides — the internal LMS is free (no Razorpay / GST).
 #
@@ -204,7 +204,7 @@ doc_events = {
 # generated from the base implementation of the doctype dashboard,
 # along with any modifications made in other Frappe apps
 # override_doctype_dashboards = {
-# 	"Task": "quality_asia_internal_lms.task.get_dashboard_data"
+# 	"Task": "lms_internal.task.get_dashboard_data"
 # }
 
 # exempt linked doctypes from being automatically cancelled
@@ -218,16 +218,16 @@ doc_events = {
 
 # Request Events
 # ----------------
-# before_request = ["quality_asia_internal_lms.utils.before_request"]
+# before_request = ["lms_internal.utils.before_request"]
 # Inject the brand skin <link> into the LMS SPA shell at SERVE time. This is the
 # deploy-safe path: Frappe Cloud ships apps read-only, so editing _lms.html on
 # disk (after_migrate, below) can't stick there — rewriting the response can.
-after_request = ["quality_asia_internal_lms.brand.inject_brand_css_into_response"]
+after_request = ["lms_internal.brand.inject_brand_css_into_response"]
 
 # Job Events
 # ----------
-# before_job = ["quality_asia_internal_lms.utils.before_job"]
-# after_job = ["quality_asia_internal_lms.utils.after_job"]
+# before_job = ["lms_internal.utils.before_job"]
+# after_job = ["lms_internal.utils.after_job"]
 
 # User Data Protection
 # --------------------
@@ -257,7 +257,7 @@ after_request = ["quality_asia_internal_lms.brand.inject_brand_css_into_response
 # --------------------------------
 
 # auth_hooks = [
-# 	"quality_asia_internal_lms.auth.validate"
+# 	"lms_internal.auth.validate"
 # ]
 
 # Automatically update python controller files with type annotations for this app.
