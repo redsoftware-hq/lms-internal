@@ -1,8 +1,10 @@
 /* Quality Asia — brand skin for the Frappe LMS SPA.
  *
- * Loaded after the frappe-ui bundle in lms/lms/www/_lms.html, so these
- * :root overrides win in the cascade. We only retheme design tokens + the
- * font (not component markup), so this survives frontend rebuilds.
+ * Loaded via an injected <link> in lms/lms/www/_lms.html. Newer LMS builds
+ * inject the frappe-ui theme CSS from JS at runtime (after our static link),
+ * so the token overrides are !important to win regardless of load order.
+ * We only retheme design tokens + the font (not component markup), so this
+ * survives frontend rebuilds.
  *
  * Brand kit ref: dev-resources/ref-for-claude  (primary red #e20a0a, Rubik) */
 
@@ -16,20 +18,20 @@ html {
 /* --- Brand palette: red primary + accents (override frappe-ui tokens) --- */
 :root {
 	/* Primary / solid-button background (frappe-ui default: near-black #171717) */
-	--surface-gray-7: #e20a0a;
+	--surface-gray-7: #e20a0a !important;
 
 	/* Links & accent TEXT -> brand red (sits on white) */
-	--ink-blue-link: #e20a0a;
-	--ink-blue-2: #e20a0a;
-	--ink-blue-3: #b00808;
+	--ink-blue-link: #e20a0a !important;
+	--ink-blue-2: #e20a0a !important;
+	--ink-blue-3: #b00808 !important;
 
 	/* Info/accent SURFACES -> light red tint so callouts stay readable
 	 * (e.g. the quiz instructions box: bg-surface-blue-2 + text-ink-blue-3).
 	 * These are background tokens, so they must be light, not strong red. */
-	--surface-blue-1: #fff5f5;
-	--surface-blue-2: #fdecec;
-	--surface-blue-3: #e20a0a;   /* strong filled accent stays bold red */
-	--outline-blue-2: #ffa2a2;   /* soft red border, matches the cards */
+	--surface-blue-1: #fff5f5 !important;
+	--surface-blue-2: #fdecec !important;
+	--surface-blue-3: #e20a0a !important;   /* strong filled accent stays bold red */
+	--outline-blue-2: #ffa2a2 !important;   /* soft red border, matches the cards */
 }
 
 /* Brand hover: red -> black on the primary (solid) button */
@@ -47,8 +49,10 @@ button > img.h-8.w-8 {
 }
 
 /* Course/batch cards: light-red boundary like the reference .school-card.
- * The card root (.bg-surface-cards) is borderless; the outline is drawn by
- * its two direct children (image + body), so we recolor those. */
-.bg-surface-cards > div {
+ * The card root is borderless; the outline is drawn by its two direct children
+ * (image + body). LMS renamed the card surface class across versions, so cover
+ * both: .bg-surface-cards (<= 2.54) and .bg-surface-elevation-1 (2.57+). */
+.bg-surface-cards > div,
+.bg-surface-elevation-1 > div {
 	border-color: #ffa2a2 !important;
 }
