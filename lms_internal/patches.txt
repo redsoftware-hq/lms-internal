@@ -8,3 +8,7 @@ lms_internal.patches.v1_0.seed_initial_data
 lms_internal.patches.v1_0.remove_password_sidebar_item
 lms_internal.patches.v1_0.seed_iso_auditor_courses
 lms_internal.patches.v1_0.cleanup_orphan_iso_quizzes
+lms_internal.patches.v1_0.seed_course_categories
+lms_internal.patches.v1_0.assign_mentor_all_courses
+lms_internal.patches.v1_0.hide_sidebar_items
+lms_internal.patches.v1_0.harden_login_settings

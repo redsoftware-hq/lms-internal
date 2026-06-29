@@ -99,6 +99,9 @@ after_install = "lms_internal.brand.inject_brand_css"
 after_migrate = [
 	"lms_internal.brand.inject_brand_css",
 	"lms_internal.overrides.certificate.enforce_qa_certificate_template",
+	# Point LMS Settings -> certification_template at the shipped QA Certification
+	# Email template (only when unset, so a manual choice is never clobbered).
+	"lms_internal.setup.email_templates.ensure_certification_template",
 ]
 
 # Uninstallation
@@ -164,6 +167,12 @@ doc_events = {
 	"LMS Certificate": {
 		"before_insert": "lms_internal.overrides.certificate.prepare_certificate",
 	},
+	"LMS Course": {
+		# Auto-assign the default mentor on new courses authored in-app, and keep
+		# the Free/Paid category in sync with the paid_course flag.
+		"before_insert": "lms_internal.overrides.mentor.auto_assign_mentor",
+		"before_save": "lms_internal.overrides.course.sync_paid_category",
+	},
 }
 
 # Scheduled Tasks
@@ -195,10 +204,15 @@ doc_events = {
 # Overriding Methods
 # ------------------------------
 #
-# override_whitelisted_methods = {
-# 	"frappe.desk.doctype.event.event.get_events": "lms_internal.event.get_events"
-# }
 # No payment overrides — the internal LMS is free (no Razorpay / GST).
+override_whitelisted_methods = {
+	# Recover the course slug from the Referer when the SPA fires the outline
+	# fetch before the course resource resolves (fixes "Course Content coming
+	# soon!" stuck on reload for non-admins).
+	"lms.lms.utils.get_course_outline": "lms_internal.overrides.course.get_course_outline",
+	# Friendlier, non-enumerating password-reset confirmation + error handling.
+	"frappe.core.doctype.user.user.reset_password": "lms_internal.overrides.password_reset.reset_password",
+}
 #
 # each overriding function accepts a `data` argument;
 # generated from the base implementation of the doctype dashboard,
@@ -296,6 +310,10 @@ fixtures = [
 	{
 		"dt": "Property Setter",
 		"filters": [["name", "in", ["LMS Certificate-main-default_print_format"]]],
+	},
+	{
+		"dt": "Email Template",
+		"filters": [["name", "in", ["QA Certification Email"]]],
 	},
 ]
 
