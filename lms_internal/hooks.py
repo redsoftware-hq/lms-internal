@@ -99,9 +99,6 @@ after_install = "lms_internal.brand.inject_brand_css"
 after_migrate = [
 	"lms_internal.brand.inject_brand_css",
 	"lms_internal.overrides.certificate.enforce_qa_certificate_template",
-	# Point LMS Settings -> certification_template at the shipped QA Certification
-	# Email template (only when unset, so a manual choice is never clobbered).
-	"lms_internal.setup.email_templates.ensure_certification_template",
 ]
 
 # Uninstallation
@@ -310,10 +307,6 @@ fixtures = [
 	{
 		"dt": "Property Setter",
 		"filters": [["name", "in", ["LMS Certificate-main-default_print_format"]]],
-	},
-	{
-		"dt": "Email Template",
-		"filters": [["name", "in", ["QA Certification Email"]]],
 	},
 ]
 
