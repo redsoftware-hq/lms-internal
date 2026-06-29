@@ -8,10 +8,15 @@ BRAND_CSS_HREF = "/assets/lms_internal/css/brand.css"
 # (e.g. adding Mobile/Address/Resume + Change Password to the native Edit Profile
 # modal — QA-15). Injected the same serve-time way as the brand skin.
 PROFILE_JS_HREF = "/assets/lms_internal/js/profile_fields.js"
+# Runtime DOM patches for the LMS SPA — currently the friendly confirmation
+# message shown after an ungraded feedback quiz is submitted (replaces the
+# confusing "0 out of 0" quiz summary). See public/js/qa_lms_ui.js.
+LMS_UI_JS_HREF = "/assets/lms_internal/js/qa_lms_ui.js"
 BRAND_LINK_TAG = (
 	"\t\t<!-- Quality Asia brand skin + portal enhancements (injected by lms_internal.brand) -->\n"
 	f'\t\t<link rel="stylesheet" href="{BRAND_CSS_HREF}">\n'
 	f'\t\t<script defer src="{PROFILE_JS_HREF}"></script>\n'
+	f'\t\t<script defer src="{LMS_UI_JS_HREF}"></script>\n'
 )
 
 # Marker present only in the LMS SPA shell's rendered HTML — lets the
@@ -31,7 +36,7 @@ def _inject_tags(html):
 	if no change is needed. Strips any prior (possibly older) block first."""
 	if "</head>" not in html:
 		return None
-	if BRAND_CSS_HREF in html and PROFILE_JS_HREF in html:
+	if BRAND_CSS_HREF in html and PROFILE_JS_HREF in html and LMS_UI_JS_HREF in html:
 		return None  # already current — nothing to do
 	html = _QA_BLOCK_RE.sub("", html)  # drop any stale block before reinserting
 	return html.replace("</head>", BRAND_LINK_TAG + "\t</head>", 1)
