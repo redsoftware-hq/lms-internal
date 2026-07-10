@@ -48,6 +48,14 @@ button > img.h-8.w-8 {
 	object-fit: contain !important;
 }
 
+/* Hide "Login with Frappe Cloud" on the login page. It only renders when
+ * frappe.conf has fc_communication_secret (i.e. actually hosted on Frappe
+ * Cloud) — System Settings has no field for it, so it can't be disabled
+ * server-side. See lms_internal/patches/v1_0/harden_login_settings.py. */
+.btn-login-with-frappe-cloud {
+	display: none !important;
+}
+
 /* Course/batch cards: light-red boundary like the reference .school-card.
  * The card root is borderless; the outline is drawn by its two direct children
  * (image + body). LMS renamed the card surface class across versions, so cover
