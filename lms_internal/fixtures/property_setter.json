@@ -7,5 +7,14 @@
   "property": "default_print_format",
   "property_type": "Data",
   "value": "QA Certificate"
+ },
+ {
+  "doctype": "Property Setter",
+  "name": "LMS Certificate-main-autoname",
+  "doctype_or_field": "DocType",
+  "doc_type": "LMS Certificate",
+  "property": "autoname",
+  "property_type": "Data",
+  "value": "C-.######"
  }
 ]

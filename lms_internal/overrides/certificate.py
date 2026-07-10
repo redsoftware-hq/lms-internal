@@ -6,6 +6,8 @@
     certificate as e.g. "07th, 08th APRIL 2026".
   - The "Congratulations on getting certified!" email carries the certificate PDF
     as an in-memory attachment (QALMSCertificate, wired via override_doctype_class).
+  - Certificates are named "C-000001", "C-000002", ... instead of the stock
+    random hash (QALMSCertificate.autoname, wired via override_doctype_class).
 
 Shipped entirely as code (fixtures + these hooks) so it survives `bench migrate`
 and a fresh deploy — no fork of the LMS app.
@@ -20,6 +22,11 @@ from frappe.utils import add_days, getdate
 from lms.lms.doctype.lms_certificate.lms_certificate import LMSCertificate
 
 QA_TEMPLATE = "QA Certificate"
+
+# Certificate naming series, e.g. "C-000001". The base LMSCertificate.autoname()
+# hardcodes a random hash, so QALMSCertificate.autoname() below overrides it —
+# a Property Setter on "autoname" alone would not take effect.
+CERTIFICATE_NAMING_SERIES = "C-.######"
 
 # Training runs over two consecutive days; the first day sits 15 days before the
 # certificate's issue date (client rule, 2026-06-10). To shift the window, change
@@ -110,13 +117,20 @@ def format_training_dates(start, end):
 
 
 class QALMSCertificate(LMSCertificate):
-	"""Stock LMS Certificate plus the certificate PDF attached to its email.
+	"""Stock LMS Certificate plus our naming series and the certificate PDF
+	attached to its email.
 
-	Wired via ``override_doctype_class``; everything else (validation, naming,
-	the after_insert that triggers the email) is inherited unchanged. Only
-	``send_mail`` is overridden to add the attachment — kept in sync with the
-	stock LMS implementation.
+	Wired via ``override_doctype_class``; everything else (validation, the
+	after_insert that triggers the email) is inherited unchanged. ``autoname``
+	is overridden to name certificates "C-000001" etc. instead of the stock
+	random hash, and ``send_mail`` is overridden to add the PDF attachment —
+	both kept in sync with the stock LMS implementation.
 	"""
+
+	def autoname(self):
+		from frappe.model.naming import make_autoname
+
+		self.name = make_autoname(CERTIFICATE_NAMING_SERIES, self.doctype)
 
 	def send_mail(self):
 		from frappe.email.doctype.email_template.email_template import get_email_template

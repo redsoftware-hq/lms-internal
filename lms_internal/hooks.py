@@ -306,7 +306,10 @@ fixtures = [
 	},
 	{
 		"dt": "Property Setter",
-		"filters": [["name", "in", ["LMS Certificate-main-default_print_format"]]],
+		"filters": [["name", "in", [
+			"LMS Certificate-main-default_print_format",
+			"LMS Certificate-main-autoname",
+		]]],
 	},
 ]
 
