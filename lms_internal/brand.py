@@ -18,10 +18,20 @@ BRAND_LINK_TAG = (
 	f'\t\t<script defer src="{PROFILE_JS_HREF}"></script>\n'
 	f'\t\t<script defer src="{LMS_UI_JS_HREF}"></script>\n'
 )
+# CSS-only variant for non-LMS pages (e.g. the desk /login page) — the profile
+# and quiz-summary JS patches target LMS SPA DOM that doesn't exist there.
+BRAND_CSS_ONLY_TAG = (
+	"\t\t<!-- Quality Asia brand skin (injected by lms_internal.brand) -->\n"
+	f'\t\t<link rel="stylesheet" href="{BRAND_CSS_HREF}">\n'
+)
 
-# Marker present only in the LMS SPA shell's rendered HTML — lets the
-# request-time injector target that page without touching desk/other web pages.
+# Marker present only in the LMS SPA shell's rendered HTML.
 _LMS_SHELL_MARKER = "/assets/lms/frontend/"
+# Marker present on the desk login page (served at "/" and "/login" — this is
+# what a Frappe Cloud site's bare domain actually resolves to, not the LMS SPA).
+# Buttons like "Login with Frappe Cloud" live only here, so brand.css needs to
+# reach this page too, not just the LMS shell.
+_DESK_LOGIN_MARKER = 'data-path="login"'
 
 # Matches a previously-injected QA block (comment + its following <link>/<script>
 # lines) so we can strip-and-reinsert — keeps injection idempotent AND upgrade-safe
@@ -31,15 +41,18 @@ _QA_BLOCK_RE = re.compile(
 )
 
 
-def _inject_tags(html):
+def _inject_tags(html, tag=BRAND_LINK_TAG, require_js=True):
 	"""Return `html` with the current QA tag block placed before </head>, or None
 	if no change is needed. Strips any prior (possibly older) block first."""
 	if "</head>" not in html:
 		return None
-	if BRAND_CSS_HREF in html and PROFILE_JS_HREF in html and LMS_UI_JS_HREF in html:
+	already_current = BRAND_CSS_HREF in html and (
+		not require_js or (PROFILE_JS_HREF in html and LMS_UI_JS_HREF in html)
+	)
+	if already_current:
 		return None  # already current — nothing to do
 	html = _QA_BLOCK_RE.sub("", html)  # drop any stale block before reinserting
-	return html.replace("</head>", BRAND_LINK_TAG + "\t</head>", 1)
+	return html.replace("</head>", tag + "\t</head>", 1)
 
 
 def inject_brand_css_into_response(response=None, request=None, **kwargs):
@@ -52,7 +65,9 @@ def inject_brand_css_into_response(response=None, request=None, **kwargs):
 	it survives deploys and rebuilds and needs no manual bench command.
 
 	Cheap by design: returns immediately for non-HTML responses (API/JSON/assets)
-	and for any HTML that isn't the LMS shell.
+	and for any HTML that's neither the LMS SPA shell nor the desk login page
+	(the latter is what a bare Frappe Cloud domain actually serves, and is where
+	"Login with Frappe Cloud" / "Login with Email Link" actually live).
 	"""
 	try:
 		if response is None:
@@ -61,9 +76,14 @@ def inject_brand_css_into_response(response=None, request=None, **kwargs):
 		if "text/html" not in ctype:
 			return
 		html = response.get_data(as_text=True)
-		if not html or _LMS_SHELL_MARKER not in html:
-			return  # not the LMS SPA shell
-		new_html = _inject_tags(html)
+		if not html:
+			return
+		if _LMS_SHELL_MARKER in html:
+			new_html = _inject_tags(html, tag=BRAND_LINK_TAG, require_js=True)
+		elif _DESK_LOGIN_MARKER in html:
+			new_html = _inject_tags(html, tag=BRAND_CSS_ONLY_TAG, require_js=False)
+		else:
+			return  # neither the LMS SPA shell nor the desk login page
 		if new_html is not None:
 			response.set_data(new_html)
 	except Exception:
