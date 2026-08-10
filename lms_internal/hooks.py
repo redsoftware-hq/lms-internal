@@ -96,9 +96,15 @@ after_install = "lms_internal.brand.inject_brand_css"
 # bench update runs build -> migrate, so after_migrate self-heals the link.
 # Also re-point existing certificates onto the QA print format (runs after the
 # fixtures that create that print format are synced).
+# Staff Training-Material courses are seeded from a private File uploaded in Desk
+# (see setup.seed.TM_FIXTURE_FILE), not from the repo — the fixtures carry exam
+# answer keys. A patch would only ever fire once, before that File exists, so this
+# runs on every migrate instead: it no-ops when the File is absent and is a pure
+# idempotent upsert when present.
 after_migrate = [
 	"lms_internal.brand.inject_brand_css",
 	"lms_internal.overrides.certificate.enforce_qa_certificate_template",
+	"lms_internal.setup.seed.run_training_material_courses",
 ]
 
 # Uninstallation

@@ -44,6 +44,52 @@ def _log(msg):
 	print(f"[qa-seed] {msg}")
 
 
+# Name of the private File holding the staff Training-Material course fixtures.
+# Kept out of the (public) repo because it carries graded-exam answer keys and
+# private YouTube ids — upload it in Desk instead: /app/file -> Add File -> Private.
+TM_FIXTURE_FILE = "training_material_fixtures.json"
+
+
+def _load_tm_bundle():
+	"""Return the Training-Material fixture bundle, or None if unavailable.
+
+	Looks for the private File first (how deployments get the data, since only
+	patches/hooks run there), then falls back to the on-disk fixtures used in
+	local development. Returns a dict of {courses, quizzes, questions}.
+	"""
+	# 1. private File uploaded via Desk — newest wins, so re-uploading updates content
+	names = frappe.get_all(
+		"File",
+		filters={"file_name": TM_FIXTURE_FILE},
+		pluck="name",
+		order_by="creation desc",
+		limit=1,
+	)
+	if names:
+		try:
+			content = frappe.get_doc("File", names[0]).get_content()
+			if isinstance(content, bytes):
+				content = content.decode("utf-8")
+			bundle = json.loads(content)
+			_log(f"training-material: loaded fixtures from private File {names[0]}")
+			return bundle
+		except Exception:
+			frappe.log_error(title="lms_internal: unreadable training-material fixture File")
+			_log(f"training-material: File {names[0]} could not be read, falling back to disk")
+
+	# 2. on-disk fixtures (local dev; gitignored, so absent on deployments)
+	courses = _load("courses_training_material.json")
+	if courses:
+		_log("training-material: loaded fixtures from setup/data")
+		return {
+			"courses": courses,
+			"quizzes": _load("quizzes_training_material.json") or [],
+			"questions": _load("questions_training_material.json") or [],
+		}
+
+	return None
+
+
 # --------------------------------------------------------------------------- files
 def _copy_files(manifest):
 	"""Copy bundled files to the site and ensure a File record exists. Returns (copied, created)."""
@@ -264,16 +310,17 @@ def seed_training_material_courses():
 	It can only create/update the tm-* docs named in its own fixtures, so it can
 	never remove or overwrite other courses, the ISO seed, or UI edits elsewhere.
 	"""
-	courses = _load("courses_training_material.json") or []
+	bundle = _load_tm_bundle()
+	courses = (bundle or {}).get("courses") or []
 	if not courses:
 		_log("training-material: no course data found, skipping")
 		return
 
 	# questions before quizzes (quiz rows reference question names),
 	# quizzes before lessons (Course Lesson.on_update validates embedded quizzes).
-	for q in (_load("questions_training_material.json") or []):
+	for q in bundle.get("questions") or []:
 		_upsert("LMS Question", q)
-	for quiz in (_load("quizzes_training_material.json") or []):
+	for quiz in bundle.get("quizzes") or []:
 		_upsert("LMS Quiz", quiz)
 
 	# lessons -> chapters -> course
