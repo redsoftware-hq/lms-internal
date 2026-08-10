@@ -254,3 +254,51 @@ def run_iso_auditor_courses(commit=True):
 	if commit:
 		frappe.db.commit()
 	_log("done.")
+
+
+def seed_training_material_courses():
+	"""Upsert the staff Training-Material courses (tm-* slugs) built by
+	tools/build_fixtures.py from the tracker's seed-ready list.
+
+	Deliberately PURE upsert — no chapter/lesson reconcile or delete of any kind.
+	It can only create/update the tm-* docs named in its own fixtures, so it can
+	never remove or overwrite other courses, the ISO seed, or UI edits elsewhere.
+	"""
+	courses = _load("courses_training_material.json") or []
+	if not courses:
+		_log("training-material: no course data found, skipping")
+		return
+
+	# questions before quizzes (quiz rows reference question names),
+	# quizzes before lessons (Course Lesson.on_update validates embedded quizzes).
+	for q in (_load("questions_training_material.json") or []):
+		_upsert("LMS Question", q)
+	for quiz in (_load("quizzes_training_material.json") or []):
+		_upsert("LMS Quiz", quiz)
+
+	# lessons -> chapters -> course
+	for c in courses:
+		for ch in c["chapters"]:
+			for lesson in ch["lessons"]:
+				_upsert("Course Lesson", lesson)
+	for c in courses:
+		for ch in c["chapters"]:
+			_upsert("Course Chapter", ch["chapter"])
+	for c in courses:
+		_upsert("LMS Course", c["course"])
+
+	_log(f"training-material: {len(courses)} course(s) upserted")
+
+
+def run_training_material_courses(commit=True):
+	"""Seed the staff Training-Material courses. Invoked by the
+	`seed_training_material_courses` patch, and runnable manually:
+
+	  bench --site <site> execute lms_internal.setup.seed.run_training_material_courses
+	"""
+	_log("seeding Training-Material staff courses …")
+	seed_users()  # ensure the instructor User exists before linking courses
+	seed_training_material_courses()
+	if commit:
+		frappe.db.commit()
+	_log("done.")

@@ -1,0 +1,213 @@
+{
+  "_comment": "Source of truth for building Training-Material courses. A course is seed-eligible ONLY when include=true AND every required condition resolves to 'met'. Doubtful courses are excluded with a reason. course_tracker.py evaluates this against disk + the youtube/answer-key inputs and gates seeding. Paths are relative to material_root (see tracker).",
+  "material_root": "/mnt/c/Users/suhas/Downloads/Training Material",
+  "forms_dir": "Questionnaire-20260715T085202Z-1-001/Questionnaire/Forms",
+  "decks_dir": "PPTs-20260715T085331Z-1-001/PPTs/PPT for Training Matrix",
+  "courses": [
+    {
+      "id": "pre-basics",
+      "title": "Pre-Basics",
+      "tier": 1,
+      "category": "Mandatory Awareness",
+      "include": true,
+      "decks": ["01 Mandatory Awaness/02 Pre-Basics - Quality Asia.pptx"],
+      "deck_alternates": ["01 Mandatory Awaness/01 Pre-Basics - Quality Asia.pptx"],
+      "supporting_pdf": "PPTs-20260715T085331Z-1-001/PPTs/PDF/Pre-Basic Training PPT - Quality Asia.pdf",
+      "quiz_form": "Training Evaluation Form - Pre-Basics Training _ Quality Asia Certifications (Responses).xlsx",
+      "conditions": {
+        "content": {"required": true},
+        "graded_quiz": {"required": true},
+        "feedback_quiz": {"required": true},
+        "youtube_intro": {"required": true},
+        "description": {"required": true},
+        "category": {"required": true},
+        "thumbnail": {"required": false}
+      }
+    },
+    {
+      "id": "quality-asia-basics",
+      "title": "Quality Asia Basics",
+      "tier": 1,
+      "category": "Mandatory Awareness",
+      "include": true,
+      "decks": ["01 Mandatory Awaness/11 Quality Asia Basics.pptx"],
+      "deck_alternates": ["01 Mandatory Awaness/03 Quality Asia Basics.pptx"],
+      "quiz_form": "Training Evaluation Form - Basics Training _ Quality Asia Certifications (Responses).xlsx",
+      "conditions": {
+        "content": {"required": true},
+        "graded_quiz": {"required": true},
+        "feedback_quiz": {"required": true},
+        "youtube_intro": {"required": true},
+        "description": {"required": true},
+        "category": {"required": true},
+        "thumbnail": {"required": false}
+      }
+    },
+    {
+      "id": "induction",
+      "title": "Induction",
+      "tier": 1,
+      "category": "Mandatory Awareness",
+      "include": true,
+      "decks": ["01 Mandatory Awaness/01 Induction - Quality Asia Certifications.pptx"],
+      "quiz_form": "Training Evaluation Form - Induction Training _ Quality Asia Certifications (Responses).xlsx",
+      "conditions": {
+        "content": {"required": true},
+        "graded_quiz": {"required": true},
+        "feedback_quiz": {"required": true},
+        "youtube_intro": {"required": true},
+        "description": {"required": true},
+        "category": {"required": true},
+        "thumbnail": {"required": false}
+      }
+    },
+    {
+      "id": "sales-officer-process",
+      "title": "Sales Officer Process",
+      "tier": 1,
+      "category": "Sales Officer",
+      "include": true,
+      "decks": ["05 Sales Officer/Sales Officer Process.pptx"],
+      "quiz_form": "Training Evaluation Form - Sales Officer Process Training _ Quality Asia Certifications (Responses).xlsx",
+      "conditions": {
+        "content": {"required": true},
+        "graded_quiz": {"required": true},
+        "feedback_quiz": {"required": true},
+        "youtube_intro": {"required": true},
+        "description": {"required": true},
+        "category": {"required": true},
+        "thumbnail": {"required": false}
+      }
+    },
+    {
+      "id": "hr-recruitment",
+      "title": "HR - Recruitment",
+      "tier": 1,
+      "category": "HR & Admin Officer",
+      "include": true,
+      "decks": ["09 HR and Admin Officer/HR Processes – Recruitment.pptx"],
+      "quiz_form": "Training Evaluation Form - HR & Admin Process Training _ Quality Asia Certifications (Responses).xlsx",
+      "conditions": {
+        "content": {"required": true},
+        "graded_quiz": {"required": true},
+        "feedback_quiz": {"required": true},
+        "youtube_intro": {"required": true},
+        "description": {"required": true},
+        "category": {"required": true},
+        "thumbnail": {"required": false}
+      }
+    },
+    {
+      "id": "quality-assurance-process",
+      "title": "Quality Assurance Process",
+      "tier": 1,
+      "category": "Quality Assurance Officer",
+      "include": true,
+      "decks": ["Quality Assurance Process.pptx"],
+      "quiz_form": "Training Evaluation Form - Quality Assurance Process Training _ Quality Asia Certifications (Responses).xlsx",
+      "conditions": {
+        "content": {"required": true},
+        "graded_quiz": {"required": true},
+        "feedback_quiz": {"required": true},
+        "youtube_intro": {"required": true},
+        "description": {"required": true},
+        "category": {"required": true},
+        "thumbnail": {"required": false}
+      }
+    },
+
+    {
+      "id": "certification-officer",
+      "title": "Certification Officer Process",
+      "tier": 2,
+      "category": "Certification Officer",
+      "include": false,
+      "exclude_reason": "Granularity doubt (A1): 4 QP decks share one role-level quiz. Decide one-course-per-role vs one-per-procedure before including.",
+      "decks": [
+        "04 Certification Officer/QP -03 PROCEDURE FOR APPLICATION REVIEW, QUOTATION AND AGREEMENTPROCEDURE.pptx",
+        "04 Certification Officer/QP - 04 Procedure for Planning and Executing Audits.pptx",
+        "04 Certification Officer/QP-19 - PROCEDURE FOR TRANSFER OF CERTIFICATION.pptx",
+        "04 Certification Officer/QP-22 - PROCEDURE FOR AUDIT OF A MULTI-SITE ORGANIZATION.pptx"
+      ],
+      "quiz_form": "Training Evaluation Form - Certification Team Process Training _ Quality Asia Certifications (Responses).xlsx"
+    },
+    {
+      "id": "qa-officer",
+      "title": "Quality Assurance Officer Process",
+      "tier": 2,
+      "category": "Quality Assurance Officer",
+      "include": false,
+      "exclude_reason": "Granularity doubt (A1): 7 QP decks share one role-level quiz.",
+      "decks": [
+        "07 Quality Assurance Officer/QP -03 PROCEDURE FOR APPLICATION REVIEW, QUOTATION AND AGREEMENTPROCEDURE.pptx",
+        "07 Quality Assurance Officer/QP - 04 Procedure for Planning and Executing Audits.pptx",
+        "07 Quality Assurance Officer/QP–10 - PROCEDURE FOR ASSESSMENT OF AUDIT REPORTS.pptx",
+        "07 Quality Assurance Officer/QP-13 PROCEDURES FOR RESOLUTION OF APPEALS, COMPLAINTS, AND DISPUTATIONS.pptx",
+        "07 Quality Assurance Officer/QP-19 - PROCEDURE FOR TRANSFER OF CERTIFICATION.pptx",
+        "07 Quality Assurance Officer/QP-20 - PROCEDURE FOR USE OF LOGOS AND CERTIFICATE.pptx",
+        "07 Quality Assurance Officer/QP-22 - PROCEDURE FOR AUDIT OF A MULTI-SITE ORGANIZATION.pptx"
+      ],
+      "quiz_form": "Training Evaluation Form - Quality Assurance Process Training _ Quality Asia Certifications (Responses).xlsx"
+    },
+
+    {
+      "id": "iso-9001-awareness",  "title": "ISO 9001 Awareness",  "tier": 3, "category": "Mandatory Awareness", "include": false,
+      "exclude_reason": "No quiz in material (C2): awareness deck has no graded exam or feedback form.",
+      "decks": ["01 Mandatory Awaness/06 ISO 9001 Awareness Training.pptx"], "quiz_form": null },
+    {
+      "id": "iso-14001-awareness", "title": "ISO 14001 Awareness", "tier": 3, "category": "Mandatory Awareness", "include": false,
+      "exclude_reason": "No quiz in material (C2).",
+      "decks": ["01 Mandatory Awaness/07 ISO 14001 Awareness Training.pptx"], "quiz_form": null },
+    {
+      "id": "iso-45001-awareness", "title": "ISO 45001 Awareness", "tier": 3, "category": "Mandatory Awareness", "include": false,
+      "exclude_reason": "No quiz in material (C2).",
+      "decks": ["01 Mandatory Awaness/08 ISO 45001 Awareness Training.pptx"], "quiz_form": null },
+    {
+      "id": "iso-50001-awareness", "title": "ISO 50001 Awareness", "tier": 3, "category": "Mandatory Awareness", "include": false,
+      "exclude_reason": "No quiz in material (C2).",
+      "decks": ["01 Mandatory Awaness/09 ISO 50001 Awareness Training.pptx"], "quiz_form": null },
+    {
+      "id": "iso-22000-awareness", "title": "ISO 22000 Awareness", "tier": 3, "category": "Mandatory Awareness", "include": false,
+      "exclude_reason": "No quiz in material (C2).",
+      "decks": ["01 Mandatory Awaness/10 ISO 22000 Awareness Training.pptx"],
+      "supporting_pdf": "PPTs-20260715T085331Z-1-001/PPTs/PDF/ISO 22000-2018 IA Training - Quality Asia.pdf",
+      "quiz_form": null },
+    {
+      "id": "dwm-erp-portal", "title": "DWM ERP Portal", "tier": 3, "category": "Mandatory Awareness", "include": false,
+      "exclude_reason": "No quiz in material (C2).",
+      "decks": ["01 Mandatory Awaness/13 DWM (Daily Work Management) ERP Portal.pptx"], "quiz_form": null },
+    {
+      "id": "basic-auditor-calibration", "title": "Basic Auditor Calibration", "tier": 3, "category": "Auditor Calibration", "include": false,
+      "exclude_reason": "No quiz in material (C2).",
+      "decks": ["02 Auditor Calibration/01 Basic Auditor Calibration.pptx"], "quiz_form": null },
+    {
+      "id": "auditor-calibration-qp", "title": "Auditor Calibration (QP-05/06/07/08/09/24/25)", "tier": 3, "category": "Auditor Calibration", "include": false,
+      "exclude_reason": "No quiz in material (C2); also granularity doubt (7 QP decks).",
+      "decks": [
+        "02 Auditor Calibration/02 QP-05 - PROCEDURE FOR PLANNING AND PREPARATION OF AUDITS.pptx",
+        "02 Auditor Calibration/QP-06 - PROCEDURE FOR INITIAL AUDIT.pptx",
+        "02 Auditor Calibration/QP-07 - PROCEDURE FOR SPECIAL AUDIT.pptx",
+        "02 Auditor Calibration/QP-08 - PROCEDURE FOR SURVEILLANCE AUDIT.pptx",
+        "02 Auditor Calibration/QP-09 - PROCEDURE FOR RE-CERTIFICATION AUDIT.pptx",
+        "02 Auditor Calibration/QP-24 - PROCEDURE FOR REMOTE AUDIT.pptx",
+        "02 Auditor Calibration/QP - 25 - Procedure for Auditing Management of Integrated Management System.pptx"
+      ], "quiz_form": null },
+
+    {
+      "id": "marketing-officer-process", "title": "Marketing Officer Process", "tier": 4, "category": "Marketing Officer", "include": false,
+      "exclude_reason": "No teaching content (B3): quiz form exists but no deck.",
+      "decks": [], "quiz_form": "Training Evaluation Form - Marketing Officer Process Training _ Quality Asia Certifications (Responses).xlsx" },
+    {
+      "id": "finance-officer-process", "title": "Finance Officer Process", "tier": 4, "category": "Finance Officer", "include": false,
+      "exclude_reason": "No teaching content (B3).",
+      "decks": [], "quiz_form": "Training Evaluation Form - Finance Officer Process Training _ Quality Asia Certifications (Responses).xlsx" },
+    {
+      "id": "lead-implementer", "title": "Lead Implementer", "tier": 4, "category": "GMC", "include": false,
+      "exclude_reason": "No teaching content (B3).",
+      "decks": [], "quiz_form": "Training Evaluation Form - Lead Implementer _ Quality Asia Certifications (Responses).xlsx" },
+    {
+      "id": "ms-documentation", "title": "MS Documentation", "tier": 4, "category": "GMC Documentation Executive", "include": false,
+      "exclude_reason": "No teaching content (B3).",
+      "decks": [], "quiz_form": "Training Evaluation Form - MS Documentation Training _ Quality Asia Certifications (Responses).xlsx" }
+  ]
+}

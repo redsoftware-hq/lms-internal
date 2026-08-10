@@ -13,6 +13,15 @@ scripts/
 
 # Local dev bench (Docker Compose environment)
 dev-bench/
+
+# Training-material course data — NOT for a public repo.
+# Contains graded-exam answer keys and private YouTube video ids.
+# Supply these on the deployment host before running `bench migrate`;
+# seed.py skips cleanly when they are absent.
+lms_internal/setup/build/
+lms_internal/setup/data/courses_training_material.json
+lms_internal/setup/data/quizzes_training_material.json
+lms_internal/setup/data/questions_training_material.json
 CLAUDE.md
 MIGRATION_PLAN.md
 Makefile
