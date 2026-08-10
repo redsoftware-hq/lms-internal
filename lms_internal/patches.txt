@@ -17,3 +17,4 @@ lms_internal.patches.v1_0.seed_training_material_courses
 lms_internal.patches.v1_1.seed_training_material_courses_from_file
 lms_internal.patches.v1_2.seed_training_material_courses
 lms_internal.patches.v1_3.seed_training_material_courses
+lms_internal.patches.v1_4.seed_training_material_courses
