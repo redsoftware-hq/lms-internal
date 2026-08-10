@@ -54,8 +54,8 @@ def _load_tm_bundle():
 	"""Return the Training-Material fixture bundle, or None if unavailable.
 
 	Looks for the private File first (how deployments get the data, since only
-	patches/hooks run there), then falls back to the on-disk fixtures used in
-	local development. Returns a dict of {courses, quizzes, questions}.
+	patches run there), then falls back to the on-disk fixtures used in local
+	development. Returns a dict of {courses, quizzes, questions}.
 	"""
 	# 1. private File uploaded via Desk — newest wins, so re-uploading updates content
 	names = frappe.get_all(
@@ -81,11 +81,12 @@ def _load_tm_bundle():
 	courses = _load("courses_training_material.json")
 	if courses:
 		_log("training-material: loaded fixtures from setup/data")
-		return {
+		bundle = {
 			"courses": courses,
 			"quizzes": _load("quizzes_training_material.json") or [],
 			"questions": _load("questions_training_material.json") or [],
 		}
+		return bundle
 
 	return None
 
@@ -309,12 +310,22 @@ def seed_training_material_courses():
 	Deliberately PURE upsert — no chapter/lesson reconcile or delete of any kind.
 	It can only create/update the tm-* docs named in its own fixtures, so it can
 	never remove or overwrite other courses, the ISO seed, or UI edits elsewhere.
+
+	Invoked once by a patch (recorded in Patch Log -> never re-runs), so later
+	admin edits in the UI are never overwritten.
 	"""
 	bundle = _load_tm_bundle()
 	courses = (bundle or {}).get("courses") or []
 	if not courses:
 		_log("training-material: no course data found, skipping")
 		return
+
+	# Categories first: LMS Course.category is a Link, and while this seed passes
+	# ignore_links, a missing target makes the course unsaveable from Desk later
+	# ("Could not find Category: ...").
+	for category in sorted({c["course"].get("category") for c in courses if c["course"].get("category")}):
+		if not frappe.db.exists("LMS Category", category):
+			_upsert("LMS Category", {"name": category, "category": category})
 
 	# questions before quizzes (quiz rows reference question names),
 	# quizzes before lessons (Course Lesson.on_update validates embedded quizzes).
