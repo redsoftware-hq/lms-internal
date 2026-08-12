@@ -121,15 +121,27 @@
       "title": "Certification Officer Process",
       "tier": 2,
       "category": "Certification Officer",
-      "include": false,
-      "exclude_reason": "Granularity doubt (A1): 4 QP decks share one role-level quiz. Decide one-course-per-role vs one-per-procedure before including.",
+      "include": true,
+      "source": "2026 client drop (2026-08-12) — one consolidated PDF + one role-level form, i.e. A1 resolved as one-course-per-role.",
       "decks": [
+        "../../../2026-20260812T115150Z-1-001/2026/6. Certification Team Process/Certification Team Process.pdf"
+      ],
+      "deck_alternates": [
         "04 Certification Officer/QP -03 PROCEDURE FOR APPLICATION REVIEW, QUOTATION AND AGREEMENTPROCEDURE.pptx",
         "04 Certification Officer/QP - 04 Procedure for Planning and Executing Audits.pptx",
         "04 Certification Officer/QP-19 - PROCEDURE FOR TRANSFER OF CERTIFICATION.pptx",
         "04 Certification Officer/QP-22 - PROCEDURE FOR AUDIT OF A MULTI-SITE ORGANIZATION.pptx"
       ],
-      "quiz_form": "Training Evaluation Form - Certification Team Process Training _ Quality Asia Certifications (Responses).xlsx"
+      "quiz_form": "../../../2026-20260812T115150Z-1-001/2026/6. Certification Team Process/Training Evaluation Form - Certification Team Process Training _ Quality Asia Certifications (Responses).xlsx",
+      "conditions": {
+        "content": {"required": true},
+        "graded_quiz": {"required": true},
+        "feedback_quiz": {"required": true},
+        "youtube_intro": {"required": false},
+        "description": {"required": false},
+        "category": {"required": true},
+        "thumbnail": {"required": false}
+      }
     },
     {
       "id": "qa-officer",
@@ -137,7 +149,7 @@
       "tier": 2,
       "category": "Quality Assurance Officer",
       "include": false,
-      "exclude_reason": "Granularity doubt (A1): 7 QP decks share one role-level quiz.",
+      "exclude_reason": "No QA-Officer exam exists. Its quiz_form is the SAME file used by quality-assurance-process, whose questions cover the QA process (project initiation, GAP assessment, CDR, MRM), not the 7 QP procedures. The 2026 drop re-sent that identical form as folder 11, so nothing new arrived. Needs a QP-scoped exam from the client, or a decision to drop this course as a duplicate of quality-assurance-process.",
       "decks": [
         "07 Quality Assurance Officer/QP -03 PROCEDURE FOR APPLICATION REVIEW, QUOTATION AND AGREEMENTPROCEDURE.pptx",
         "07 Quality Assurance Officer/QP - 04 Procedure for Planning and Executing Audits.pptx",
@@ -181,9 +193,12 @@
       "exclude_reason": "No quiz in material (C2).",
       "decks": ["02 Auditor Calibration/01 Basic Auditor Calibration.pptx"], "quiz_form": null },
     {
-      "id": "auditor-calibration-qp", "title": "Auditor Calibration (QP-05/06/07/08/09/24/25)", "tier": 3, "category": "Auditor Calibration", "include": false,
-      "exclude_reason": "No quiz in material (C2); also granularity doubt (7 QP decks).",
+      "id": "auditor-calibration-qp", "title": "Auditor Calibration (QP-05/06/07/08/09/24/25)", "tier": 3, "category": "Auditor Calibration", "include": true,
+      "source": "2026 client drop (2026-08-12) — consolidated session PDF + graded form (27 responses).",
       "decks": [
+        "../../../2026-20260812T115150Z-1-001/2026/12. Auditor Calibration/Auditor Calibration Session - Jan 2026.pdf"
+      ],
+      "deck_alternates": [
         "02 Auditor Calibration/02 QP-05 - PROCEDURE FOR PLANNING AND PREPARATION OF AUDITS.pptx",
         "02 Auditor Calibration/QP-06 - PROCEDURE FOR INITIAL AUDIT.pptx",
         "02 Auditor Calibration/QP-07 - PROCEDURE FOR SPECIAL AUDIT.pptx",
@@ -191,23 +206,73 @@
         "02 Auditor Calibration/QP-09 - PROCEDURE FOR RE-CERTIFICATION AUDIT.pptx",
         "02 Auditor Calibration/QP-24 - PROCEDURE FOR REMOTE AUDIT.pptx",
         "02 Auditor Calibration/QP - 25 - Procedure for Auditing Management of Integrated Management System.pptx"
-      ], "quiz_form": null },
+      ],
+      "quiz_form": "../../../2026-20260812T115150Z-1-001/2026/12. Auditor Calibration/Training Evaluation Form _ 01-12-2024 (Responses).xlsx",
+      "conditions": {
+        "content": {"required": true},
+        "graded_quiz": {"required": true},
+        "feedback_quiz": {"required": true},
+        "youtube_intro": {"required": false},
+        "description": {"required": false},
+        "category": {"required": true},
+        "thumbnail": {"required": false}
+      } },
 
     {
-      "id": "marketing-officer-process", "title": "Marketing Officer Process", "tier": 4, "category": "Marketing Officer", "include": false,
-      "exclude_reason": "No teaching content (B3): quiz form exists but no deck.",
-      "decks": [], "quiz_form": "Training Evaluation Form - Marketing Officer Process Training _ Quality Asia Certifications (Responses).xlsx" },
+      "id": "marketing-officer-process", "title": "Marketing Officer Process", "tier": 4, "category": "Marketing Officer", "include": true,
+      "source": "2026 client drop (2026-08-12) — teaching content supplied as PDF.",
+      "decks": ["../../../2026-20260812T115150Z-1-001/2026/10. Marketing Process/Marketing Process.pdf"],
+      "quiz_form": "../../../2026-20260812T115150Z-1-001/2026/10. Marketing Process/Training Evaluation Form - Marketing Officer Process Training _ Quality Asia Certifications (Responses).xlsx",
+      "conditions": {
+        "content": {"required": true},
+        "graded_quiz": {"required": true},
+        "feedback_quiz": {"required": true},
+        "youtube_intro": {"required": false},
+        "description": {"required": false},
+        "category": {"required": true},
+        "thumbnail": {"required": false}
+      } },
     {
-      "id": "finance-officer-process", "title": "Finance Officer Process", "tier": 4, "category": "Finance Officer", "include": false,
-      "exclude_reason": "No teaching content (B3).",
-      "decks": [], "quiz_form": "Training Evaluation Form - Finance Officer Process Training _ Quality Asia Certifications (Responses).xlsx" },
+      "id": "finance-officer-process", "title": "Finance Officer Process", "tier": 4, "category": "Finance Officer", "include": true,
+      "source": "2026 client drop (2026-08-12) — teaching content supplied as PDF.",
+      "decks": ["../../../2026-20260812T115150Z-1-001/2026/7. Finance Team Process/Finance Team Process.pdf"],
+      "quiz_form": "../../../2026-20260812T115150Z-1-001/2026/7. Finance Team Process/Training Evaluation Form - Finance Officer Process Training _ Quality Asia Certifications (Responses).xlsx",
+      "conditions": {
+        "content": {"required": true},
+        "graded_quiz": {"required": true},
+        "feedback_quiz": {"required": true},
+        "youtube_intro": {"required": false},
+        "description": {"required": false},
+        "category": {"required": true},
+        "thumbnail": {"required": false}
+      } },
     {
-      "id": "lead-implementer", "title": "Lead Implementer", "tier": 4, "category": "GMC", "include": false,
-      "exclude_reason": "No teaching content (B3).",
-      "decks": [], "quiz_form": "Training Evaluation Form - Lead Implementer _ Quality Asia Certifications (Responses).xlsx" },
+      "id": "lead-implementer", "title": "Lead Implementer", "tier": 4, "category": "GMC", "include": true,
+      "source": "2026 client drop (2026-08-12) — teaching content supplied as PDF; form has 30 responses.",
+      "decks": ["../../../2026-20260812T115150Z-1-001/2026/8. Lead Implementer Training/Lead Implementer Training.pdf"],
+      "quiz_form": "../../../2026-20260812T115150Z-1-001/2026/8. Lead Implementer Training/Training Evaluation Form - Lead Implementer _ Quality Asia Certifications (Responses).xlsx",
+      "conditions": {
+        "content": {"required": true},
+        "graded_quiz": {"required": true},
+        "feedback_quiz": {"required": true},
+        "youtube_intro": {"required": false},
+        "description": {"required": false},
+        "category": {"required": true},
+        "thumbnail": {"required": false}
+      } },
     {
-      "id": "ms-documentation", "title": "MS Documentation", "tier": 4, "category": "GMC Documentation Executive", "include": false,
-      "exclude_reason": "No teaching content (B3).",
-      "decks": [], "quiz_form": "Training Evaluation Form - MS Documentation Training _ Quality Asia Certifications (Responses).xlsx" }
+      "id": "ms-documentation", "title": "MS Documentation", "tier": 4, "category": "GMC Documentation Executive", "include": true,
+      "source": "2026 client drop (2026-08-12) — teaching content supplied as PDF; form has only 1 response.",
+      "decks": ["../../../2026-20260812T115150Z-1-001/2026/9. Management System Document/Management System Documentation.pdf"],
+      "quiz_form": "../../../2026-20260812T115150Z-1-001/2026/9. Management System Document/Training Evaluation Form - MS Documentation Training _ Quality Asia Certifications (Responses).xlsx",
+      "conditions": {
+        "content": {"required": true},
+        "graded_quiz": {"required": true},
+        "feedback_quiz": {"required": true},
+        "youtube_intro": {"required": false},
+        "description": {"required": false},
+        "category": {"required": true},
+        "thumbnail": {"required": false}
+      } }
   ]
 }
