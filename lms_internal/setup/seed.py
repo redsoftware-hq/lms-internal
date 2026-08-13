@@ -44,6 +44,57 @@ def _log(msg):
 	print(f"[qa-seed] {msg}")
 
 
+# Per-course reference PDF, uploaded by hand in Desk as a PRIVATE File named
+# "<course-slug>-material.pdf" (e.g. tm-pre-basics-material.pdf). Kept private
+# because these decks document internal process (finance, certification, ERP).
+#
+# A private file is permission-checked on every request, so a bare link would 403
+# for students. frappe's File.has_permission falls back to the attached document's
+# read permission, so we attach each PDF to the course's "Course Video" chapter.
+#
+# It has to be the CHAPTER, not the LMS Course: the LMS portal serves courses through
+# whitelisted APIs, so LMS Course grants read to Course Creator / Moderator / System
+# Manager only -- attaching there leaves students with a 403. Course Chapter is
+# readable by the LMS Student role, which gives logged-in staff access while Guest
+# still gets nothing. Verified both ways on a real LMS Student user.
+MATERIAL_SUFFIX = "-material.pdf"
+
+MATERIAL_BLOCK = (
+	'<h3><strong>Training material</strong></h3>'
+	'<p><a target="_blank" rel="noopener noreferrer" href="{url}">'
+	'<strong>Download the PDF reference material</strong></a></p>'
+)
+
+
+def _material_file(slug):
+	"""Return (File name, file_url) for this course's reference PDF, or (None, None)."""
+	rows = frappe.get_all(
+		"File",
+		filters={"file_name": f"{slug}{MATERIAL_SUFFIX}"},
+		fields=["name", "file_url"],
+		order_by="creation desc",
+		limit=1,
+	)
+	if not rows:
+		return None, None
+	return rows[0].name, rows[0].file_url
+
+
+def _attach_material(file_name, slug):
+	"""Attach the PDF to the course's video chapter, so students can read it."""
+	chapter = f"{slug}-video"
+	if not frappe.db.exists("Course Chapter", chapter):
+		chapter = frappe.db.get_value("Course Chapter", {"course": slug}, "name")
+	if not chapter:
+		_log(f"training-material: no chapter for {slug}, material stays unattached")
+		return
+	frappe.db.set_value("File", file_name, {
+		"attached_to_doctype": "Course Chapter",
+		"attached_to_name": chapter,
+		"is_private": 1,
+	})
+
+
 # Name of the private File holding the staff Training-Material course fixtures.
 # Kept out of the (public) repo because it carries graded-exam answer keys and
 # private YouTube ids — upload it in Desk instead: /app/file -> Add File -> Private.
@@ -342,10 +393,28 @@ def seed_training_material_courses():
 	for c in courses:
 		for ch in c["chapters"]:
 			_upsert("Course Chapter", ch["chapter"])
-	for c in courses:
-		_upsert("LMS Course", c["course"])
 
-	_log(f"training-material: {len(courses)} course(s) upserted")
+	# Courses last, appending the material download link to the description when the
+	# PDF is present. Absent PDF -> no link rather than a dead one, so a course with
+	# a forgotten upload still seeds cleanly.
+	pending, linked = [], 0
+	for c in courses:
+		course = dict(c["course"])
+		slug = course["name"]
+		file_name, url = _material_file(slug)
+		if url:
+			course["description"] = (course.get("description") or "") + MATERIAL_BLOCK.format(url=url)
+			pending.append((file_name, slug))
+			linked += 1
+		_upsert("LMS Course", course)
+
+	# after the course exists, so the attachment link resolves
+	for file_name, slug in pending:
+		_attach_material(file_name, slug)
+
+	missing = len(courses) - linked
+	_log(f"training-material: {len(courses)} course(s) upserted, {linked} with material PDF"
+		+ (f", {missing} without" if missing else ""))
 
 
 def run_training_material_courses(commit=True):

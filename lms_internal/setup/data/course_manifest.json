@@ -6,7 +6,7 @@
   "courses": [
     {
       "id": "pre-basics",
-      "title": "Pre-Basics",
+      "title": "Pre-Basics Training",
       "tier": 1,
       "category": "Mandatory Awareness",
       "include": true,
@@ -26,7 +26,7 @@
     },
     {
       "id": "quality-asia-basics",
-      "title": "Quality Asia Basics",
+      "title": "Basics Training",
       "tier": 1,
       "category": "Mandatory Awareness",
       "include": true,
@@ -45,7 +45,7 @@
     },
     {
       "id": "induction",
-      "title": "Induction",
+      "title": "Induction Training",
       "tier": 1,
       "category": "Mandatory Awareness",
       "include": true,
@@ -63,7 +63,7 @@
     },
     {
       "id": "sales-officer-process",
-      "title": "Sales Officer Process",
+      "title": "Sales Officer Process Training",
       "tier": 1,
       "category": "Sales Officer",
       "include": true,
@@ -81,7 +81,7 @@
     },
     {
       "id": "hr-recruitment",
-      "title": "HR - Recruitment",
+      "title": "HR & Admin Process Training",
       "tier": 1,
       "category": "HR & Admin Officer",
       "include": true,
@@ -99,7 +99,7 @@
     },
     {
       "id": "quality-assurance-process",
-      "title": "Quality Assurance Process",
+      "title": "Quality Assurance Process Training",
       "tier": 1,
       "category": "Quality Assurance Officer",
       "include": true,
@@ -118,7 +118,7 @@
 
     {
       "id": "certification-officer",
-      "title": "Certification Officer Process",
+      "title": "Certification Team Process Training",
       "tier": 2,
       "category": "Certification Officer",
       "include": true,
@@ -193,7 +193,7 @@
       "exclude_reason": "No quiz in material (C2).",
       "decks": ["02 Auditor Calibration/01 Basic Auditor Calibration.pptx"], "quiz_form": null },
     {
-      "id": "auditor-calibration-qp", "title": "Auditor Calibration (QP-05/06/07/08/09/24/25)", "tier": 3, "category": "Auditor Calibration", "include": true,
+      "id": "auditor-calibration-qp", "title": "Auditor Calibration", "tier": 3, "category": "Auditor Calibration", "include": true,
       "source": "2026 client drop (2026-08-12) — consolidated session PDF + graded form (27 responses).",
       "decks": [
         "../../../2026-20260812T115150Z-1-001/2026/12. Auditor Calibration/Auditor Calibration Session - Jan 2026.pdf"
@@ -219,7 +219,7 @@
       } },
 
     {
-      "id": "marketing-officer-process", "title": "Marketing Officer Process", "tier": 4, "category": "Marketing Officer", "include": true,
+      "id": "marketing-officer-process", "title": "Marketing Officer Process Training", "tier": 4, "category": "Marketing Officer", "include": true,
       "source": "2026 client drop (2026-08-12) — teaching content supplied as PDF.",
       "decks": ["../../../2026-20260812T115150Z-1-001/2026/10. Marketing Process/Marketing Process.pdf"],
       "quiz_form": "../../../2026-20260812T115150Z-1-001/2026/10. Marketing Process/Training Evaluation Form - Marketing Officer Process Training _ Quality Asia Certifications (Responses).xlsx",
@@ -233,7 +233,7 @@
         "thumbnail": {"required": false}
       } },
     {
-      "id": "finance-officer-process", "title": "Finance Officer Process", "tier": 4, "category": "Finance Officer", "include": true,
+      "id": "finance-officer-process", "title": "Finance Officer Process Training", "tier": 4, "category": "Finance Officer", "include": true,
       "source": "2026 client drop (2026-08-12) — teaching content supplied as PDF.",
       "decks": ["../../../2026-20260812T115150Z-1-001/2026/7. Finance Team Process/Finance Team Process.pdf"],
       "quiz_form": "../../../2026-20260812T115150Z-1-001/2026/7. Finance Team Process/Training Evaluation Form - Finance Officer Process Training _ Quality Asia Certifications (Responses).xlsx",
@@ -261,7 +261,7 @@
         "thumbnail": {"required": false}
       } },
     {
-      "id": "ms-documentation", "title": "MS Documentation", "tier": 4, "category": "GMC Documentation Executive", "include": true,
+      "id": "ms-documentation", "title": "MS Documentation Training", "tier": 4, "category": "GMC Documentation Executive", "include": true,
       "source": "2026 client drop (2026-08-12) — teaching content supplied as PDF; form has only 1 response.",
       "decks": ["../../../2026-20260812T115150Z-1-001/2026/9. Management System Document/Management System Documentation.pdf"],
       "quiz_form": "../../../2026-20260812T115150Z-1-001/2026/9. Management System Document/Training Evaluation Form - MS Documentation Training _ Quality Asia Certifications (Responses).xlsx",

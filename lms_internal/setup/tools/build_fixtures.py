@@ -136,7 +136,10 @@ def main():
         out_quizzes.append(_quiz_doc(e_quiz, f"{title} Final Exam", e_ls, slug, q_rows, total_marks))
         fb_rows = [{"idx": i, "question": n, "marks": 0, "question_detail": "", "type": "Choices"}
                    for i, n in enumerate(FEEDBACK_QS, 1)]
-        out_quizzes.append(_quiz_doc(f_quiz, f"{title} Training Feedback", f_ls, slug, fb_rows, 0,
+        # titles now end in "Training" (they follow the client's form names), so append
+        # only "Feedback" to avoid "... Training Training Feedback"
+        fb_title = f"{title} Feedback" if title.endswith("Training") else f"{title} Training Feedback"
+        out_quizzes.append(_quiz_doc(f_quiz, fb_title, f_ls, slug, fb_rows, 0,
                                      passing=0, is_feedback=True))
 
         # --- chapters (with lesson docs) ---
