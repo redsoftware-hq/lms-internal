@@ -67,10 +67,15 @@ MATERIAL_BLOCK = (
 
 
 def _material_file(slug):
-	"""Return (File name, file_url) for this course's reference PDF, or (None, None)."""
+	"""Return (File name, file_url) for this course's reference PDF, or (None, None).
+
+	Matched with LIKE, not equality: re-uploading a file that already exists makes
+	frappe rewrite file_name itself ("x.pdf" -> "x1a2b3c.pdf"), so an exact match
+	would silently keep resolving to the FIRST upload. Newest wins.
+	"""
 	rows = frappe.get_all(
 		"File",
-		filters={"file_name": f"{slug}{MATERIAL_SUFFIX}"},
+		filters={"file_name": ("like", f"{slug}-material%.pdf")},
 		fields=["name", "file_url"],
 		order_by="creation desc",
 		limit=1,
@@ -108,10 +113,14 @@ def _load_tm_bundle():
 	patches run there), then falls back to the on-disk fixtures used in local
 	development. Returns a dict of {courses, quizzes, questions}.
 	"""
-	# 1. private File uploaded via Desk — newest wins, so re-uploading updates content
+	# 1. private File uploaded via Desk — newest wins, so re-uploading updates content.
+	# LIKE, not equality: uploading over an existing name makes frappe rewrite file_name
+	# ("...fixtures.json" -> "...fixtures626869.json"), so an exact match would keep
+	# resolving to the FIRST upload and silently seed stale content.
+	stem = TM_FIXTURE_FILE.rsplit(".", 1)[0]
 	names = frappe.get_all(
 		"File",
-		filters={"file_name": TM_FIXTURE_FILE},
+		filters={"file_name": ("like", f"{stem}%.json")},
 		pluck="name",
 		order_by="creation desc",
 		limit=1,
